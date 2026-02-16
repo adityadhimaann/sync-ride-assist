@@ -56,23 +56,23 @@ const plans = [
 
 const PricingSection = () => {
   return (
-    <section id="pricing" className="py-20 md:py-28 bg-background">
+    <section id="pricing" className="py-16 md:py-28 bg-background">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-10 md:mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-3 md:mb-4">
             Simple, Transparent Pricing
           </h2>
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto">
+          <p className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto">
             Start free. Add protection when you need it.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto items-start">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8 max-w-5xl mx-auto items-start">
           {plans.map((plan, i) => (
             <motion.div
               key={plan.name}
@@ -81,34 +81,34 @@ const PricingSection = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.15 }}
               whileHover={{ y: -5 }}
-              className={`rounded-2xl p-8 relative ${
+              className={`rounded-2xl p-6 md:p-8 relative ${
                 plan.highlighted
-                  ? "glass-card-elevated border-2 border-primary/20 scale-105"
+                  ? "glass-card-elevated border-2 border-primary/20 md:scale-105"
                   : "glass-card"
               }`}
             >
               {plan.highlighted && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <span className="gradient-primary text-primary-foreground text-xs font-bold px-4 py-1.5 rounded-full">
+                <div className="absolute -top-3.5 md:-top-4 left-1/2 -translate-x-1/2">
+                  <span className="gradient-primary text-primary-foreground text-[10px] md:text-xs font-bold px-3 md:px-4 py-1 md:py-1.5 rounded-full">
                     Most Popular
                   </span>
                 </div>
               )}
-              <h3 className="text-xl font-bold text-foreground mb-1">{plan.name}</h3>
-              <p className="text-muted-foreground text-sm mb-4">{plan.description}</p>
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-foreground">{plan.price}</span>
-                <span className="text-muted-foreground ml-2">/ {plan.period}</span>
+              <h3 className="text-lg md:text-xl font-bold text-foreground mb-1">{plan.name}</h3>
+              <p className="text-muted-foreground text-xs md:text-sm mb-3 md:mb-4">{plan.description}</p>
+              <div className="mb-5 md:mb-6">
+                <span className="text-3xl md:text-4xl font-bold text-foreground">{plan.price}</span>
+                <span className="text-muted-foreground ml-2 text-sm">/ {plan.period}</span>
               </div>
-              <ul className="space-y-3 mb-8">
+              <ul className="space-y-2.5 md:space-y-3 mb-6 md:mb-8">
                 {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-3 text-sm text-foreground">
-                    <Check className="h-4 w-4 text-success flex-shrink-0" />
+                  <li key={feature} className="flex items-center gap-2.5 md:gap-3 text-xs md:text-sm text-foreground">
+                    <Check className="h-3.5 w-3.5 md:h-4 md:w-4 text-success flex-shrink-0" />
                     {feature}
                   </li>
                 ))}
               </ul>
-              <Button variant={plan.variant} size="lg" className="w-full">
+              <Button variant={plan.variant} size="lg" className="w-full text-sm md:text-base">
                 {plan.cta}
               </Button>
             </motion.div>

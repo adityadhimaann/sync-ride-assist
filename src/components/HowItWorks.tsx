@@ -30,18 +30,18 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <section className="py-20 md:py-28 bg-muted/50">
+    <section className="py-14 md:py-28 bg-muted/50">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-10 md:mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-3 md:mb-4">
             How It Works
           </h2>
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto">
+          <p className="text-muted-foreground text-sm md:text-lg max-w-xl mx-auto">
             From your doorstep to your destination, in four simple steps.
           </p>
         </motion.div>
@@ -54,24 +54,24 @@ const HowItWorks = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="flex items-start gap-6 mb-12 last:mb-0"
+              className="flex items-start gap-4 md:gap-6 mb-8 md:mb-12 last:mb-0"
             >
               <div className="flex-shrink-0">
                 <div className="relative">
-                  <div className="w-14 h-14 rounded-2xl gradient-primary flex items-center justify-center">
-                    <step.icon className="h-6 w-6 text-primary-foreground" />
+                  <div className="w-11 h-11 md:w-14 md:h-14 rounded-xl md:rounded-2xl gradient-primary flex items-center justify-center">
+                    <step.icon className="h-5 w-5 md:h-6 md:w-6 text-primary-foreground" />
                   </div>
-                  <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-secondary text-secondary-foreground text-xs font-bold flex items-center justify-center">
+                  <span className="absolute -top-1.5 -right-1.5 md:-top-2 md:-right-2 w-5 h-5 md:w-7 md:h-7 rounded-full bg-secondary text-secondary-foreground text-[10px] md:text-xs font-bold flex items-center justify-center">
                     {step.step}
                   </span>
                 </div>
                 {i < steps.length - 1 && (
-                  <div className="w-0.5 h-12 bg-border mx-auto mt-3" />
+                  <div className="w-0.5 h-8 md:h-12 bg-border mx-auto mt-2 md:mt-3" />
                 )}
               </div>
-              <div className="pt-2">
-                <h3 className="text-xl font-bold text-foreground mb-2">{step.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{step.description}</p>
+              <div className="pt-1 md:pt-2">
+                <h3 className="text-base md:text-xl font-bold text-foreground mb-1.5 md:mb-2">{step.title}</h3>
+                <p className="text-muted-foreground text-sm md:text-base leading-relaxed">{step.description}</p>
               </div>
             </motion.div>
           ))}

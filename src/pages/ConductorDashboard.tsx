@@ -60,12 +60,12 @@ const ConductorDashboard = () => {
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <div className="flex items-center gap-3 mb-2">
-            <div className="gradient-primary rounded-xl p-2.5">
-              <Bus className="h-6 w-6 text-primary-foreground" />
+            <div className="gradient-primary rounded-xl p-2 md:p-2.5 flex-shrink-0">
+              <Bus className="h-5 w-5 md:h-6 md:w-6 text-primary-foreground" />
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">Conductor Dashboard</h1>
-              <p className="text-sm text-muted-foreground">VRL Travels • Bangalore → Goa • 7:00 AM</p>
+            <div className="min-w-0">
+              <h1 className="text-xl md:text-2xl font-bold text-foreground">Conductor Dashboard</h1>
+              <p className="text-xs md:text-sm text-muted-foreground truncate">VRL Travels • Bangalore → Goa • 7:00 AM</p>
             </div>
           </div>
         </motion.div>
@@ -75,18 +75,18 @@ const ConductorDashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="glass-card-elevated p-5 my-6"
+          className="glass-card-elevated p-4 md:p-5 my-5 md:my-6"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Today's Wait Bonuses</p>
-              <p className="text-3xl font-bold text-foreground flex items-center">
-                <IndianRupee className="h-7 w-7" />{todayEarnings}
+              <p className="text-xs md:text-sm text-muted-foreground">Today's Wait Bonuses</p>
+              <p className="text-2xl md:text-3xl font-bold text-foreground flex items-center">
+                <IndianRupee className="h-5 w-5 md:h-7 md:w-7" />{todayEarnings}
               </p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-muted-foreground">Passengers</p>
-              <p className="text-3xl font-bold text-foreground">
+              <p className="text-xs md:text-sm text-muted-foreground">Passengers</p>
+              <p className="text-2xl md:text-3xl font-bold text-foreground">
                 {mockPassengers.filter((p) => p.status === "boarded").length}/{mockPassengers.length}
               </p>
             </div>
@@ -94,12 +94,12 @@ const ConductorDashboard = () => {
         </motion.div>
 
         {/* Filters */}
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
+        <div className="flex gap-2 mb-5 md:mb-6 overflow-x-auto pb-1 -mx-4 px-4">
           {filters.map((filter) => (
             <button
               key={filter}
               onClick={() => setActiveFilter(filter)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-colors ${
+              className={`px-3 md:px-4 py-2 rounded-xl text-xs md:text-sm font-medium whitespace-nowrap transition-colors ${
                 activeFilter === filter
                   ? "bg-primary text-primary-foreground"
                   : "bg-muted text-muted-foreground hover:bg-accent"
@@ -107,7 +107,7 @@ const ConductorDashboard = () => {
             >
               {filter}
               {filter !== "All" && (
-                <span className="ml-1.5">
+                <span className="ml-1">
                   ({mockPassengers.filter((p) => statusLabels[p.status] === filter).length})
                 </span>
               )}
@@ -116,59 +116,62 @@ const ConductorDashboard = () => {
         </div>
 
         {/* Passenger Cards */}
-        <div className="space-y-4">
+        <div className="space-y-3 md:space-y-4">
           {filtered.map((passenger, i) => (
             <motion.div
               key={passenger.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="glass-card p-5"
+              className="glass-card p-4 md:p-5"
             >
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
-                  <User className="h-6 w-6 text-muted-foreground" />
+              <div className="flex items-start gap-3 md:gap-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
+                  <User className="h-5 w-5 md:h-6 md:w-6 text-muted-foreground" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <h3 className="font-semibold text-foreground">{passenger.name}</h3>
-                    <span className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${statusColors[passenger.status]}`}>
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <h3 className="font-semibold text-foreground text-sm md:text-base truncate">{passenger.name}</h3>
+                    <span className={`px-2 py-0.5 md:px-2.5 md:py-1 rounded-lg text-[10px] md:text-xs font-semibold flex-shrink-0 ${statusColors[passenger.status]}`}>
                       {statusLabels[passenger.status]}
                     </span>
                   </div>
-                  <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-                    <MapPin className="h-3.5 w-3.5" /> {passenger.boardingPoint}
+                  <p className="text-xs md:text-sm text-muted-foreground flex items-center gap-1">
+                    <MapPin className="h-3 w-3 md:h-3.5 md:w-3.5 flex-shrink-0" /> 
+                    <span className="truncate">{passenger.boardingPoint}</span>
                   </p>
 
                   {passenger.status === "en_route" && (
                     <>
-                      <div className="flex items-center gap-2 mt-2">
-                        <Clock className="h-4 w-4 text-warning" />
-                        <span className="text-sm font-semibold text-warning">
-                          Arriving in {passenger.eta} min
-                        </span>
+                      <div className="flex items-center gap-2 mt-2 flex-wrap">
+                        <div className="flex items-center gap-1">
+                          <Clock className="h-3.5 w-3.5 md:h-4 md:w-4 text-warning" />
+                          <span className="text-xs md:text-sm font-semibold text-warning">
+                            Arriving in {passenger.eta} min
+                          </span>
+                        </div>
                         {passenger.protectionEnabled && (
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                          <span className="text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
                             Protected
                           </span>
                         )}
                       </div>
                       <div className="flex gap-2 mt-3">
-                        <Button variant="success" size="sm" className="flex-1">
-                          <CheckCircle className="h-4 w-4" />
-                          Wait for ₹{passenger.waitBonus}
+                        <Button variant="success" size="sm" className="flex-1 text-xs md:text-sm h-9">
+                          <CheckCircle className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                          Wait ₹{passenger.waitBonus}
                         </Button>
-                        <Button variant="destructive" size="sm" className="flex-1">
-                          <XCircle className="h-4 w-4" />
-                          Mark Missed
+                        <Button variant="destructive" size="sm" className="flex-1 text-xs md:text-sm h-9">
+                          <XCircle className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                          Missed
                         </Button>
                       </div>
                       <div className="flex gap-2 mt-2">
-                        <Button variant="outline" size="sm" className="flex-1">
-                          <Phone className="h-4 w-4" /> Call
+                        <Button variant="outline" size="sm" className="flex-1 text-xs md:text-sm h-8">
+                          <Phone className="h-3.5 w-3.5" /> Call
                         </Button>
-                        <Button variant="outline" size="sm" className="flex-1">
-                          <MessageCircle className="h-4 w-4" /> Chat
+                        <Button variant="outline" size="sm" className="flex-1 text-xs md:text-sm h-8">
+                          <MessageCircle className="h-3.5 w-3.5" /> Chat
                         </Button>
                       </div>
                     </>

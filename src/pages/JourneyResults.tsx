@@ -74,15 +74,15 @@ const JourneyResults = () => {
 
   return (
     <div className="min-h-screen bg-background pt-20">
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="container mx-auto px-4 py-6 md:py-8 max-w-2xl">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <button onClick={() => navigate("/")} className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors">
+          <button onClick={() => navigate("/")} className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4 md:mb-6 transition-colors text-sm">
             <ArrowLeft className="h-4 w-4" /> Back to search
           </button>
 
-          <div className="mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Your Journey Plan</h1>
-            <p className="text-muted-foreground">
+          <div className="mb-6 md:mb-8">
+            <h1 className="text-xl md:text-3xl font-bold text-foreground mb-1 md:mb-2">Your Journey Plan</h1>
+            <p className="text-muted-foreground text-sm md:text-base">
               Koramangala → Majestic → Goa • {Math.floor(totalDuration / 60)}h {totalDuration % 60}m total
             </p>
           </div>
@@ -92,17 +92,17 @@ const JourneyResults = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="flex items-start gap-3 p-4 rounded-2xl bg-warning/10 border border-warning/20 mb-6"
+            className="flex items-start gap-3 p-3 md:p-4 rounded-xl md:rounded-2xl bg-warning/10 border border-warning/20 mb-5 md:mb-6"
           >
-            <AlertTriangle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
+            <AlertTriangle className="h-4 w-4 md:h-5 md:w-5 text-warning flex-shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-foreground text-sm">Heavy traffic detected on Hosur Road</p>
-              <p className="text-muted-foreground text-sm">We've added a 10-min buffer. Consider leaving 5 minutes early.</p>
+              <p className="font-semibold text-foreground text-xs md:text-sm">Heavy traffic detected on Hosur Road</p>
+              <p className="text-muted-foreground text-xs md:text-sm">We've added a 10-min buffer. Consider leaving 5 minutes early.</p>
             </div>
           </motion.div>
 
           {/* Journey Timeline */}
-          <div className="space-y-4 mb-8">
+          <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
             {mockLegs.map((leg, i) => {
               const Icon = legIcons[leg.type];
               const isExpanded = expandedLeg === leg.id;
@@ -117,30 +117,30 @@ const JourneyResults = () => {
                 >
                   <button
                     onClick={() => setExpandedLeg(isExpanded ? null : leg.id)}
-                    className="w-full p-5 flex items-center gap-4 text-left"
+                    className="w-full p-4 md:p-5 flex items-center gap-3 md:gap-4 text-left"
                   >
-                    <div className="flex flex-col items-center">
-                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center border ${legColors[leg.type]}`}>
-                        <Icon className="h-5 w-5" />
+                    <div className="flex flex-col items-center flex-shrink-0">
+                      <div className={`w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center border ${legColors[leg.type]}`}>
+                        <Icon className="h-4 w-4 md:h-5 md:w-5" />
                       </div>
                       {i < mockLegs.length - 1 && (
-                        <div className="w-0.5 h-6 bg-border mt-2" />
+                        <div className="w-0.5 h-4 md:h-6 bg-border mt-1.5 md:mt-2" />
                       )}
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-semibold text-foreground text-sm">
+                      <div className="flex items-center justify-between gap-2 mb-0.5 md:mb-1">
+                        <span className="font-semibold text-foreground text-xs md:text-sm truncate">
                           {leg.type === "wait" ? "Buffer Time" : leg.vehicle || "Walking"}
                         </span>
-                        <span className="text-sm font-bold text-foreground">
+                        <span className="text-xs md:text-sm font-bold text-foreground flex-shrink-0">
                           {leg.cost > 0 ? `₹${leg.cost}` : "Free"}
                         </span>
                       </div>
-                      <p className="text-muted-foreground text-sm truncate">
+                      <p className="text-muted-foreground text-xs md:text-sm truncate">
                         {leg.from} → {leg.to}
                       </p>
-                      <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-2 md:gap-3 mt-1 md:mt-1.5 text-[10px] md:text-xs text-muted-foreground flex-wrap">
                         <span>{leg.departureTime} - {leg.arrivalTime}</span>
                         <span>•</span>
                         <span>{leg.duration} min</span>
@@ -154,9 +154,9 @@ const JourneyResults = () => {
                     </div>
 
                     {isExpanded ? (
-                      <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                      <ChevronUp className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                     ) : (
-                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                      <ChevronDown className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                     )}
                   </button>
 
@@ -165,11 +165,11 @@ const JourneyResults = () => {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      className="border-t border-border px-5 pb-5"
+                      className="border-t border-border px-4 md:px-5 pb-4 md:pb-5"
                     >
-                      <div className="pt-4 space-y-3">
+                      <div className="pt-3 md:pt-4 space-y-3">
                         {leg.operator && (
-                          <div className="flex items-center justify-between text-sm">
+                          <div className="flex items-center justify-between text-xs md:text-sm">
                             <span className="text-muted-foreground">Operator</span>
                             <span className="font-medium text-foreground">{leg.operator}</span>
                           </div>
@@ -181,14 +181,14 @@ const JourneyResults = () => {
                               { icon: Snowflake, label: "AC" },
                               { icon: Users, label: "23 seats left" },
                             ].map(({ icon: AmenityIcon, label }) => (
-                              <span key={label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted text-xs text-muted-foreground">
-                                <AmenityIcon className="h-3.5 w-3.5" /> {label}
+                              <span key={label} className="flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-1 md:py-1.5 rounded-lg bg-muted text-[10px] md:text-xs text-muted-foreground">
+                                <AmenityIcon className="h-3 w-3 md:h-3.5 md:w-3.5" /> {label}
                               </span>
                             ))}
                           </div>
                         )}
                         {leg.type === "local_transport" && (
-                          <Button variant="outline" size="sm" className="w-full">
+                          <Button variant="outline" size="sm" className="w-full text-xs md:text-sm">
                             <Users className="h-4 w-4" />
                             View Shared Ride Options (save ₹60)
                           </Button>
@@ -206,30 +206,30 @@ const JourneyResults = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className={`rounded-2xl p-5 border-2 transition-colors cursor-pointer mb-8 ${
+            className={`rounded-xl md:rounded-2xl p-4 md:p-5 border-2 transition-colors cursor-pointer mb-6 md:mb-8 ${
               protectionEnabled
                 ? "border-primary bg-primary/5"
                 : "border-border bg-card"
             }`}
             onClick={() => setProtectionEnabled(!protectionEnabled)}
           >
-            <div className="flex items-center gap-4">
-              <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${
+            <div className="flex items-center gap-3 md:gap-4">
+              <div className={`w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${
                 protectionEnabled ? "gradient-primary" : "bg-muted"
               }`}>
-                <Shield className={`h-5 w-5 ${protectionEnabled ? "text-primary-foreground" : "text-muted-foreground"}`} />
+                <Shield className={`h-4 w-4 md:h-5 md:w-5 ${protectionEnabled ? "text-primary-foreground" : "text-muted-foreground"}`} />
               </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-foreground">Guaranteed Arrival</span>
-                  <span className="font-bold text-foreground">₹75</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-semibold text-foreground text-sm md:text-base">Guaranteed Arrival</span>
+                  <span className="font-bold text-foreground text-sm md:text-base">₹75</span>
                 </div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs md:text-sm text-muted-foreground">
                   Bus waits up to 10 min or full refund + ₹500 compensation
                 </p>
               </div>
-              <div className={`w-12 h-7 rounded-full p-1 transition-colors ${protectionEnabled ? "bg-primary" : "bg-border"}`}>
-                <div className={`w-5 h-5 rounded-full bg-card shadow transition-transform ${protectionEnabled ? "translate-x-5" : ""}`} />
+              <div className={`w-10 h-6 md:w-12 md:h-7 rounded-full p-0.5 md:p-1 transition-colors flex-shrink-0 ${protectionEnabled ? "bg-primary" : "bg-border"}`}>
+                <div className={`w-5 h-5 rounded-full bg-card shadow transition-transform ${protectionEnabled ? "translate-x-4 md:translate-x-5" : ""}`} />
               </div>
             </div>
           </motion.div>
@@ -237,24 +237,24 @@ const JourneyResults = () => {
       </div>
 
       {/* Floating Bottom Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-xl border-t border-border p-4 z-40">
+      <div className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-xl border-t border-border p-3 md:p-4 z-40">
         <div className="container mx-auto max-w-2xl flex items-center justify-between">
           <div>
-            <div className="flex items-center gap-2">
-              <Wallet className="h-4 w-4 text-muted-foreground" />
-              <span className="text-2xl font-bold text-foreground">₹{totalCost}</span>
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <Wallet className="h-3.5 w-3.5 md:h-4 md:w-4 text-muted-foreground" />
+              <span className="text-xl md:text-2xl font-bold text-foreground">₹{totalCost}</span>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-[10px] md:text-xs text-muted-foreground">
               {Math.floor(totalDuration / 60)}h {totalDuration % 60}m • {protectionEnabled ? "Protected ✓" : "No protection"}
             </p>
           </div>
-          <Button variant="hero" size="lg" onClick={() => navigate("/tracking")}>
+          <Button variant="hero" size="lg" onClick={() => navigate("/tracking")} className="text-sm md:text-base px-5 md:px-8">
             Book Now
           </Button>
         </div>
       </div>
 
-      <div className="pb-24" />
+      <div className="pb-20 md:pb-24" />
       <Footer />
     </div>
   );

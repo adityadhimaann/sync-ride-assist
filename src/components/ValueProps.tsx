@@ -24,24 +24,24 @@ const props = [
 
 const ValueProps = () => {
   return (
-    <section className="py-20 md:py-28 bg-background">
+    <section className="py-14 md:py-28 bg-background">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-center mb-10 md:mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-3 md:mb-4">
             Why Travelers Love <span className="gradient-text">SyncRide</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
             We solve the #1 problem in Indian intercity travel — getting to your bus on time.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 max-w-5xl mx-auto">
           {props.map((prop, i) => (
             <motion.div
               key={prop.title}
@@ -50,13 +50,13 @@ const ValueProps = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.15 }}
               whileHover={{ y: -5 }}
-              className="glass-card p-8 text-center group cursor-default"
+              className="glass-card p-6 md:p-8 text-center group cursor-default"
             >
-              <div className={`inline-flex items-center justify-center w-14 h-14 rounded-2xl ${prop.color} mb-5 group-hover:scale-110 transition-transform`}>
-                <prop.icon className="h-7 w-7" />
+              <div className={`inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-2xl ${prop.color} mb-4 md:mb-5 group-hover:scale-110 transition-transform`}>
+                <prop.icon className="h-6 w-6 md:h-7 md:w-7" />
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">{prop.title}</h3>
-              <p className="text-muted-foreground leading-relaxed">{prop.description}</p>
+              <h3 className="text-lg md:text-xl font-bold text-foreground mb-2 md:mb-3">{prop.title}</h3>
+              <p className="text-muted-foreground text-sm md:text-base leading-relaxed">{prop.description}</p>
             </motion.div>
           ))}
         </div>

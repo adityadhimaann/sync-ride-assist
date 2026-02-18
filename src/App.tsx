@@ -10,6 +10,8 @@ import Index from "./pages/Index";
 import JourneyResults from "./pages/JourneyResults";
 import LiveTracking from "./pages/LiveTracking";
 import ConductorDashboard from "./pages/ConductorDashboard";
+import SafetyCenter from "./pages/SafetyCenter";
+import TripInsurance from "./pages/TripInsurance";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -50,6 +52,8 @@ const App = () => (
             <Route path="/results" element={<JourneyResults />} />
             <Route path="/tracking" element={<LiveTracking />} />
             <Route path="/conductor" element={<ConductorDashboard />} />
+            <Route path="/safety" element={<SafetyCenter />} />
+            <Route path="/insurance" element={<TripInsurance />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </LenisProvider>

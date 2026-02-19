@@ -1,16 +1,32 @@
+import { motion } from "framer-motion";
 import { Bus, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
+import RoadAnimation from "@/components/RoadAnimation";
 
 const Footer = () => {
   return (
-    <footer className="bg-foreground text-background py-10 md:py-16">
+    <footer className="bg-foreground text-background py-10 md:py-16 relative overflow-hidden">
+      {/* Animated bus across top */}
+      <div className="absolute top-0 left-0 right-0">
+        <RoadAnimation />
+        <motion.div
+          animate={{ x: ["-10%", "110%"] }}
+          transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
+          className="absolute -top-3"
+        >
+          <div className="w-6 h-6 rounded bg-secondary flex items-center justify-center shadow">
+            <Bus className="h-3 w-3 text-secondary-foreground" />
+          </div>
+        </motion.div>
+      </div>
+
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10">
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center gap-2.5 mb-4">
-              <div className="gradient-secondary rounded-xl p-2">
+              <motion.div whileHover={{ rotate: 10 }} className="gradient-secondary rounded-xl p-2">
                 <Bus className="h-5 w-5 text-secondary-foreground" />
-              </div>
+              </motion.div>
               <span className="text-xl font-bold">
                 Sync<span className="text-secondary">Ride</span>
               </span>

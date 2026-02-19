@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { MapPin, Clock, Bus, CheckCircle } from "lucide-react";
+import AnimatedBus from "@/components/AnimatedBus";
 
 const steps = [
   {
@@ -30,7 +31,11 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <section className="py-14 md:py-28 bg-muted/50">
+    <section className="py-14 md:py-28 bg-muted/50 relative overflow-hidden">
+      {/* Animated bus running across */}
+      <AnimatedBus className="top-6 hidden md:block" size="sm" direction="right" duration={15} color="bg-secondary/80" />
+      <AnimatedBus className="bottom-8 hidden md:block" size="sm" direction="left" duration={20} color="bg-primary/80" />
+
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -38,9 +43,7 @@ const HowItWorks = () => {
           viewport={{ once: true }}
           className="text-center mb-10 md:mb-16"
         >
-          <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-3 md:mb-4">
-            How It Works
-          </h2>
+          <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-3 md:mb-4">How It Works</h2>
           <p className="text-muted-foreground text-sm md:text-lg max-w-xl mx-auto">
             From your doorstep to your destination, in four simple steps.
           </p>
@@ -54,23 +57,35 @@ const HowItWorks = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="flex items-start gap-4 md:gap-6 mb-8 md:mb-12 last:mb-0"
+              className="flex items-start gap-4 md:gap-6 mb-8 md:mb-12 last:mb-0 group"
             >
               <div className="flex-shrink-0">
                 <div className="relative">
-                  <div className="w-11 h-11 md:w-14 md:h-14 rounded-xl md:rounded-2xl gradient-primary flex items-center justify-center">
+                  <motion.div
+                    whileHover={{ scale: 1.15, rotate: 5 }}
+                    className="w-11 h-11 md:w-14 md:h-14 rounded-xl md:rounded-2xl gradient-primary flex items-center justify-center"
+                  >
                     <step.icon className="h-5 w-5 md:h-6 md:w-6 text-primary-foreground" />
-                  </div>
-                  <span className="absolute -top-1.5 -right-1.5 md:-top-2 md:-right-2 w-5 h-5 md:w-7 md:h-7 rounded-full bg-secondary text-secondary-foreground text-[10px] md:text-xs font-bold flex items-center justify-center">
+                  </motion.div>
+                  <motion.span
+                    whileHover={{ scale: 1.2 }}
+                    className="absolute -top-1.5 -right-1.5 md:-top-2 md:-right-2 w-5 h-5 md:w-7 md:h-7 rounded-full bg-secondary text-secondary-foreground text-[10px] md:text-xs font-bold flex items-center justify-center"
+                  >
                     {step.step}
-                  </span>
+                  </motion.span>
                 </div>
                 {i < steps.length - 1 && (
-                  <div className="w-0.5 h-8 md:h-12 bg-border mx-auto mt-2 md:mt-3" />
+                  <motion.div
+                    initial={{ scaleY: 0 }}
+                    whileInView={{ scaleY: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: i * 0.15 + 0.3 }}
+                    className="w-0.5 h-8 md:h-12 bg-border mx-auto mt-2 md:mt-3 origin-top"
+                  />
                 )}
               </div>
               <div className="pt-1 md:pt-2">
-                <h3 className="text-base md:text-xl font-bold text-foreground mb-1.5 md:mb-2">{step.title}</h3>
+                <h3 className="text-base md:text-xl font-bold text-foreground mb-1.5 md:mb-2 group-hover:text-primary transition-colors">{step.title}</h3>
                 <p className="text-muted-foreground text-sm md:text-base leading-relaxed">{step.description}</p>
               </div>
             </motion.div>

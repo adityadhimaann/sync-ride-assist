@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import heroTravel1 from "@/assets/hero-travel-1.jpg";
 import heroTravel2 from "@/assets/hero-travel-2.jpg";
 import heroTravel3 from "@/assets/hero-travel-3.jpg";
+import AnimatedBus from "@/components/AnimatedBus";
 
 const heroImages = [heroTravel1, heroTravel2, heroTravel3];
 
@@ -38,29 +39,27 @@ const HeroSection = () => {
       <AnimatePresence mode="wait">
         <motion.div
           key={currentImage}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0, scale: 1.05 }}
+          animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.7 }}
           className="absolute inset-0"
         >
-          <img
-            src={heroImages[currentImage]}
-            alt="Travel background"
-            className="w-full h-full object-cover"
-          />
+          <img src={heroImages[currentImage]} alt="Travel background" className="w-full h-full object-cover" />
         </motion.div>
       </AnimatePresence>
-      {/* Dark overlay for text readability */}
       <div className="absolute inset-0 bg-foreground/60" />
+
+      {/* Animated buses running across bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-16 z-[5] overflow-hidden pointer-events-none">
+        <div className="absolute bottom-3 left-0 right-0 h-0.5 bg-primary-foreground/10" />
+        <AnimatedBus className="bottom-1" size="sm" direction="right" duration={12} color="bg-secondary" />
+        <AnimatedBus className="bottom-1" size="sm" direction="right" duration={18} color="bg-primary" />
+      </div>
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <span className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-primary-foreground/10 backdrop-blur-md text-primary-foreground/90 text-xs md:text-sm font-medium mb-4 md:mb-6">
               <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
               Trusted by 50,000+ travelers across India
@@ -75,7 +74,17 @@ const HeroSection = () => {
           >
             Never Miss Your
             <br />
-            <span className="text-secondary">Intercity Bus</span> Again
+            <span className="text-secondary relative">
+              Intercity Bus
+              <motion.span
+                className="absolute -right-8 md:-right-12 top-1/2 -translate-y-1/2"
+                animate={{ x: [0, 6, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                <Bus className="h-5 w-5 md:h-8 md:w-8 text-secondary" />
+              </motion.span>
+            </span>{" "}
+            Again
           </motion.h1>
 
           <motion.p

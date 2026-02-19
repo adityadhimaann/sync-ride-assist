@@ -55,7 +55,7 @@ const ConductorDashboard = () => {
     : mockPassengers.filter((p) => statusLabels[p.status] === activeFilter);
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-8">
+    <div className="min-h-screen bg-background pt-20 pb-32">
       <div className="container mx-auto px-4 max-w-2xl">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -99,11 +99,10 @@ const ConductorDashboard = () => {
             <button
               key={filter}
               onClick={() => setActiveFilter(filter)}
-              className={`px-3 md:px-4 py-2 rounded-xl text-xs md:text-sm font-medium whitespace-nowrap transition-colors ${
-                activeFilter === filter
+              className={`px-3 md:px-4 py-2 rounded-xl text-xs md:text-sm font-medium whitespace-nowrap transition-colors ${activeFilter === filter
                   ? "bg-primary text-primary-foreground"
                   : "bg-muted text-muted-foreground hover:bg-accent"
-              }`}
+                }`}
             >
               {filter}
               {filter !== "All" && (
@@ -137,7 +136,7 @@ const ConductorDashboard = () => {
                     </span>
                   </div>
                   <p className="text-xs md:text-sm text-muted-foreground flex items-center gap-1">
-                    <MapPin className="h-3 w-3 md:h-3.5 md:w-3.5 flex-shrink-0" /> 
+                    <MapPin className="h-3 w-3 md:h-3.5 md:w-3.5 flex-shrink-0" />
                     <span className="truncate">{passenger.boardingPoint}</span>
                   </p>
 

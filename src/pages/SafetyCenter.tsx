@@ -6,6 +6,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
+import { useLocationSharing } from "@/hooks/useLocationSharing";
+import { toast } from "sonner";
+import { Copy, Loader2 } from "lucide-react";
 
 interface EmergencyContact {
   id: string;
@@ -61,9 +64,17 @@ const itemVariants = {
 
 const SafetyCenter = () => {
   const [contacts, setContacts] = useState(mockContacts);
-  const [sharingActive, setSharingActive] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
   const [sosTriggered, setSosTriggered] = useState(false);
+
+  const {
+    isSharing,
+    shareLink,
+    startSharing,
+    stopSharing,
+    currentLocation,
+    error: locationError,
+  } = useLocationSharing();
 
   const handleSOS = () => {
     setSosTriggered(true);
@@ -73,11 +84,34 @@ const SafetyCenter = () => {
 
   const handleCheckIn = () => {
     setCheckedIn(true);
+    toast.success("Safe check-in sent to contacts!");
     setTimeout(() => setCheckedIn(false), 3000);
   };
 
+  const handleToggleSharing = async () => {
+    try {
+      if (isSharing) {
+        await stopSharing();
+        toast.success("Location sharing stopped");
+      } else {
+        const id = await startSharing({ durationMinutes: 120 });
+        if (id) toast.success("Location sharing started! Live for 2 hours.");
+        else if (locationError) toast.error(locationError);
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to toggle location sharing");
+    }
+  };
+
+  const copyShareLink = () => {
+    if (shareLink) {
+      navigator.clipboard.writeText(shareLink);
+      toast.success("Share link copied!");
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background pt-20">
+    <div className="min-h-screen bg-background pt-20 pb-32">
       <div className="container mx-auto px-4 py-6 md:py-10 max-w-2xl">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
@@ -103,11 +137,10 @@ const SafetyCenter = () => {
             <motion.button
               onClick={handleSOS}
               whileTap={{ scale: 0.95 }}
-              className={`w-28 h-28 md:w-36 md:h-36 rounded-full mx-auto flex items-center justify-center transition-all duration-300 ${
-                sosTriggered
-                  ? "bg-destructive animate-pulse shadow-[0_0_40px_hsla(0,84%,60%,0.5)]"
-                  : "bg-destructive/90 hover:bg-destructive shadow-[0_0_20px_hsla(0,84%,60%,0.3)] hover:shadow-[0_0_40px_hsla(0,84%,60%,0.5)]"
-              }`}
+              className={`w-28 h-28 md:w-36 md:h-36 rounded-full mx-auto flex items-center justify-center transition-all duration-300 ${sosTriggered
+                ? "bg-destructive animate-pulse shadow-[0_0_40px_hsla(0,84%,60%,0.5)]"
+                : "bg-destructive/90 hover:bg-destructive shadow-[0_0_20px_hsla(0,84%,60%,0.3)] hover:shadow-[0_0_40px_hsla(0,84%,60%,0.5)]"
+                }`}
             >
               <div className="text-center">
                 <Siren className="h-8 w-8 md:h-10 md:w-10 text-destructive-foreground mx-auto mb-1" />
@@ -142,37 +175,55 @@ const SafetyCenter = () => {
           transition={{ delay: 0.2 }}
           className="grid grid-cols-2 gap-3 mb-8"
         >
-          <button
-            onClick={() => setSharingActive(!sharingActive)}
-            className={`glass-card p-4 text-left transition-all ${
-              sharingActive ? "border-primary/40 bg-primary/5" : ""
-            }`}
-          >
-            <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-2 ${
-              sharingActive ? "bg-primary/10" : "bg-muted"
-            }`}>
-              <MapPin className={`h-4 w-4 ${sharingActive ? "text-primary" : "text-muted-foreground"}`} />
-            </div>
-            <p className="font-semibold text-foreground text-xs md:text-sm">Live Sharing</p>
-            <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5">
-              {sharingActive ? "Active • 2 viewers" : "Share location"}
-            </p>
-            {sharingActive && (
-              <span className="inline-flex items-center gap-1 mt-2 px-2 py-0.5 rounded-full bg-success/10 text-success text-[10px] font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" /> Live
-              </span>
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={handleToggleSharing}
+              className={`glass-card p-4 text-left transition-all w-full ${isSharing ? "border-primary/40 bg-primary/5" : ""
+                }`}
+            >
+              <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-2 ${isSharing ? "bg-primary/10" : "bg-muted"
+                }`}>
+                <MapPin className={`h-4 w-4 ${isSharing ? "text-primary" : "text-muted-foreground"}`} />
+              </div>
+              <p className="font-semibold text-foreground text-xs md:text-sm">Live Sharing</p>
+              <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5">
+                {isSharing ? "Active • Sharing Live GPS" : "Share location"}
+              </p>
+              {isSharing && (
+                <span className="inline-flex items-center gap-1 mt-2 px-2 py-0.5 rounded-full bg-success/10 text-success text-[10px] font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" /> Live
+                </span>
+              )}
+            </button>
+
+            {isSharing && shareLink && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                className="px-1 space-y-2"
+              >
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={shareLink}
+                    readOnly
+                    className="flex-1 h-8 px-3 rounded-lg border border-border bg-background text-[10px] text-muted-foreground truncate"
+                  />
+                  <Button variant="outline" size="sm" onClick={copyShareLink} className="gap-1.5 flex-shrink-0 h-8 text-[10px] px-2">
+                    <Copy className="h-3 w-3" /> Copy
+                  </Button>
+                </div>
+              </motion.div>
             )}
-          </button>
+          </div>
 
           <button
             onClick={handleCheckIn}
-            className={`glass-card p-4 text-left transition-all ${
-              checkedIn ? "border-success/40 bg-success/5" : ""
-            }`}
+            className={`glass-card p-4 text-left transition-all ${checkedIn ? "border-success/40 bg-success/5" : ""
+              }`}
           >
-            <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-2 ${
-              checkedIn ? "bg-success/10" : "bg-muted"
-            }`}>
+            <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-2 ${checkedIn ? "bg-success/10" : "bg-muted"
+              }`}>
               {checkedIn ? (
                 <CheckCircle className="h-4 w-4 text-success" />
               ) : (
@@ -296,7 +347,6 @@ const SafetyCenter = () => {
           <p className="text-muted-foreground text-[10px] mt-1">Toll-free • Available in English, Hindi, Punjabi</p>
         </motion.div>
       </div>
-      <Footer />
     </div>
   );
 };

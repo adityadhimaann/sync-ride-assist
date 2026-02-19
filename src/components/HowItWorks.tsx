@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { MapPin, Clock, Bus, CheckCircle } from "lucide-react";
-import AnimatedBus from "@/components/AnimatedBus";
+
 
 const steps = [
   {
@@ -32,9 +32,7 @@ const steps = [
 const HowItWorks = () => {
   return (
     <section className="py-14 md:py-28 bg-muted/50 relative overflow-hidden">
-      {/* Animated bus running across */}
-      <AnimatedBus className="top-6 hidden md:block" size="sm" direction="right" duration={15} color="bg-secondary/80" />
-      <AnimatedBus className="bottom-8 hidden md:block" size="sm" direction="left" duration={20} color="bg-primary/80" />
+
 
       <div className="container mx-auto px-4">
         <motion.div

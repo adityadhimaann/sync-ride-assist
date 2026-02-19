@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, Suspense, lazy } from "react";
 import Lenis from "lenis";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -6,15 +6,20 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-import Index from "./pages/Index";
-import JourneyResults from "./pages/JourneyResults";
-import LiveTracking from "./pages/LiveTracking";
-import ConductorDashboard from "./pages/ConductorDashboard";
-import SafetyCenter from "./pages/SafetyCenter";
-import TripInsurance from "./pages/TripInsurance";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import NotFound from "./pages/NotFound";
+import Loading from "@/components/Loading";
+import { AuthProvider } from "@/contexts/AuthContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
+
+const Index = lazy(() => import("./pages/Index"));
+const JourneyResults = lazy(() => import("./pages/JourneyResults"));
+const LiveTracking = lazy(() => import("./pages/LiveTracking"));
+const ConductorDashboard = lazy(() => import("./pages/ConductorDashboard"));
+const SafetyCenter = lazy(() => import("./pages/SafetyCenter"));
+const TripInsurance = lazy(() => import("./pages/TripInsurance"));
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const Profile = lazy(() => import("./pages/Profile"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
@@ -42,28 +47,33 @@ const LenisProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <LenisProvider>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/results" element={<JourneyResults />} />
-            <Route path="/tracking" element={<LiveTracking />} />
-            <Route path="/conductor" element={<ConductorDashboard />} />
-            <Route path="/safety" element={<SafetyCenter />} />
-            <Route path="/insurance" element={<TripInsurance />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </LenisProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <LenisProvider>
+            <Navbar />
+            <Suspense fallback={<Loading />}>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/results" element={<ProtectedRoute><JourneyResults /></ProtectedRoute>} />
+                <Route path="/tracking" element={<ProtectedRoute><LiveTracking /></ProtectedRoute>} />
+                <Route path="/conductor" element={<ProtectedRoute><ConductorDashboard /></ProtectedRoute>} />
+                <Route path="/safety" element={<SafetyCenter />} />
+                <Route path="/insurance" element={<ProtectedRoute><TripInsurance /></ProtectedRoute>} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </LenisProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </AuthProvider>
 );
 
 export default App;

@@ -160,11 +160,10 @@ const TripInsurance = () => {
                 variants={itemVariants}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setSelectedTier(tier.id)}
-                className={`relative glass-card p-5 cursor-pointer transition-all duration-200 ${
-                  isSelected
+                className={`relative glass-card p-5 cursor-pointer transition-all duration-200 ${isSelected
                     ? `border-2 ${tier.borderColor} ${tier.bgColor} shadow-lg`
                     : "border border-border hover:border-border/80"
-                }`}
+                  }`}
               >
                 {tier.badge && (
                   <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-secondary text-secondary-foreground text-[10px] font-bold uppercase tracking-wide">
@@ -173,9 +172,8 @@ const TripInsurance = () => {
                 )}
 
                 <div className="text-center mb-4">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3 ${
-                    isSelected ? tier.bgColor : "bg-muted"
-                  }`}>
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3 ${isSelected ? tier.bgColor : "bg-muted"
+                    }`}>
                     <tier.icon className={`h-5 w-5 ${isSelected ? tier.color : "text-muted-foreground"}`} />
                   </div>
                   <h3 className="font-bold text-foreground text-lg">{tier.name}</h3>
@@ -273,7 +271,6 @@ const TripInsurance = () => {
           <p className="text-[10px] text-muted-foreground mt-2">Cancel anytime before trip departure</p>
         </motion.div>
       </div>
-      <Footer />
     </div>
   );
 };

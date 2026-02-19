@@ -12,6 +12,8 @@ import LiveTracking from "./pages/LiveTracking";
 import ConductorDashboard from "./pages/ConductorDashboard";
 import SafetyCenter from "./pages/SafetyCenter";
 import TripInsurance from "./pages/TripInsurance";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -54,6 +56,8 @@ const App = () => (
             <Route path="/conductor" element={<ConductorDashboard />} />
             <Route path="/safety" element={<SafetyCenter />} />
             <Route path="/insurance" element={<TripInsurance />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </LenisProvider>

@@ -129,7 +129,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-8 md:pt-32 md:pb-0">
+    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-8 md:pt-32 md:pb-0 overflow-x-hidden">
       {/* Full-width cycling background images */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -184,7 +184,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
-            className="bg-card/95 backdrop-blur-xl rounded-2xl md:rounded-3xl p-4 md:p-8 shadow-2xl max-w-2xl mx-auto relative overflow-visible"
+            className="w-full max-w-2xl bg-card/95 backdrop-blur-xl rounded-2xl md:rounded-3xl p-4 md:p-8 shadow-2xl mx-auto relative overflow-hidden"
           >
             <div className="space-y-4">
               {/* Start Point */}
@@ -239,23 +239,23 @@ const HeroSection = () => {
                 {activeField === "dest" && <SuggestionsList currentQuery={destination} onSelect={(val) => { setDestination(val); setShowSuggestions(false); }} visible={showSuggestions} />}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
-                <div className="relative w-full min-w-0">
-                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <div className="flex flex-col sm:flex-row gap-4 w-full">
+                <div className="relative w-full sm:flex-1 min-w-0">
+                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <input
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm focus:border-primary focus:outline-none transition-colors block"
+                    className="w-full h-11 pl-11 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm focus:border-primary focus:outline-none transition-colors box-border"
                   />
                 </div>
-                <div className="relative w-full min-w-0">
-                  <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <div className="relative w-full sm:flex-1 min-w-0">
+                  <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <input
                     type="time"
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
-                    className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm focus:border-primary focus:outline-none transition-colors block"
+                    className="w-full h-11 pl-11 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm focus:border-primary focus:outline-none transition-colors box-border"
                   />
                 </div>
               </div>

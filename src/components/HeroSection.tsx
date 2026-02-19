@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Navigation, Bus, Calendar, Clock, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -7,12 +7,22 @@ import heroTravel1 from "@/assets/hero-travel-1.jpg";
 import heroTravel2 from "@/assets/hero-travel-2.jpg";
 import heroTravel3 from "@/assets/hero-travel-3.jpg";
 
+const heroImages = [heroTravel1, heroTravel2, heroTravel3];
+
 const HeroSection = () => {
   const [startPoint, setStartPoint] = useState("");
   const [busStation, setBusStation] = useState("");
   const [destination, setDestination] = useState("");
   const [loading, setLoading] = useState(false);
+  const [currentImage, setCurrentImage] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % heroImages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handlePlanJourney = () => {
     setLoading(true);
@@ -24,81 +34,25 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-8 md:pt-16 md:pb-0">
-      {/* Animated gradient background */}
-      <div className="absolute inset-0 gradient-hero opacity-95" />
-      <div
-        className="absolute inset-0 opacity-30"
-        style={{
-          backgroundImage: `radial-gradient(circle at 20% 50%, hsla(24, 95%, 53%, 0.3) 0%, transparent 50%),
-                           radial-gradient(circle at 80% 20%, hsla(224, 76%, 60%, 0.4) 0%, transparent 50%),
-                           radial-gradient(circle at 50% 80%, hsla(24, 95%, 53%, 0.2) 0%, transparent 50%)`,
-        }}
-      />
-
-      {/* Floating photo collage - desktop only */}
-      <motion.div
-        initial={{ opacity: 0, x: 40 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 0.5 }}
-        className="absolute right-[5%] top-28 hidden xl:flex flex-col gap-3"
-      >
+      {/* Full-width cycling background images */}
+      <AnimatePresence mode="wait">
         <motion.div
-          animate={{ y: [-6, 6, -6] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          className="w-36 h-48 rounded-2xl overflow-hidden shadow-2xl border-2 border-primary-foreground/20 rotate-3"
+          key={currentImage}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
+          className="absolute inset-0"
         >
-          <img src={heroTravel1} alt="Travelers boarding bus" className="w-full h-full object-cover" />
+          <img
+            src={heroImages[currentImage]}
+            alt="Travel background"
+            className="w-full h-full object-cover"
+          />
         </motion.div>
-        <motion.div
-          animate={{ y: [6, -6, 6] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          className="w-36 h-48 rounded-2xl overflow-hidden shadow-2xl border-2 border-primary-foreground/20 -rotate-2"
-        >
-          <img src={heroTravel2} alt="Auto rickshaw in city" className="w-full h-full object-cover" />
-        </motion.div>
-      </motion.div>
-
-      {/* Floating photo - left side desktop */}
-      <motion.div
-        initial={{ opacity: 0, x: -40 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
-        className="absolute left-[5%] top-1/3 hidden xl:block"
-      >
-        <motion.div
-          animate={{ y: [8, -8, 8] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          className="w-44 h-28 rounded-2xl overflow-hidden shadow-2xl border-2 border-primary-foreground/20 -rotate-3"
-        >
-          <img src={heroTravel3} alt="Scenic highway" className="w-full h-full object-cover" />
-        </motion.div>
-      </motion.div>
-
-      {/* Mobile photo strip */}
-      <div className="absolute top-16 left-0 right-0 flex gap-2 px-4 py-3 overflow-hidden xl:hidden">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 0.4, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex gap-2 w-full"
-        >
-          <div className="w-20 h-14 rounded-xl overflow-hidden flex-shrink-0">
-            <img src={heroTravel1} alt="" className="w-full h-full object-cover" />
-          </div>
-          <div className="w-20 h-14 rounded-xl overflow-hidden flex-shrink-0">
-            <img src={heroTravel2} alt="" className="w-full h-full object-cover" />
-          </div>
-          <div className="w-20 h-14 rounded-xl overflow-hidden flex-shrink-0">
-            <img src={heroTravel3} alt="" className="w-full h-full object-cover" />
-          </div>
-          <div className="w-20 h-14 rounded-xl overflow-hidden flex-shrink-0">
-            <img src={heroTravel1} alt="" className="w-full h-full object-cover" />
-          </div>
-          <div className="w-20 h-14 rounded-xl overflow-hidden flex-shrink-0">
-            <img src={heroTravel2} alt="" className="w-full h-full object-cover" />
-          </div>
-        </motion.div>
-      </div>
+      </AnimatePresence>
+      {/* Dark overlay for text readability */}
+      <div className="absolute inset-0 bg-foreground/60" />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl mx-auto text-center">

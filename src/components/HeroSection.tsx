@@ -166,6 +166,23 @@ const HeroSection = () => {
               </span>
             </motion.div>
 
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05, duration: 0.5 }}
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-3 md:gap-4 text-muted-foreground text-[10px] md:text-xs font-semibold mb-3 md:mb-4 uppercase tracking-wider"
+            >
+              <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50">
+                100+ cities
+              </span>
+              <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50">
+                500+ bus operators
+              </span>
+              <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50">
+                4.8★ rating
+              </span>
+            </motion.div>
+
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -304,22 +321,7 @@ const HeroSection = () => {
               </div>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-              className="mt-6 md:mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-4 md:gap-6 text-muted-foreground text-xs md:text-sm"
-            >
-              <span className="flex items-center gap-1.5">
-                100+ cities
-              </span>
-              <span className="flex items-center gap-1.5">
-                500+ bus operators
-              </span>
-              <span className="flex items-center gap-1.5">
-                4.8★ rating
-              </span>
-            </motion.div>
+
           </div>
 
           {/* Right Column: Coded Animated Illustration */}

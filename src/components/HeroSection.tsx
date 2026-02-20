@@ -306,26 +306,27 @@ const HeroSection = () => {
               </div>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-              className="mt-6 md:mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-4 md:gap-6 text-muted-foreground text-xs md:text-sm"
-            >
-              <span className="flex items-center gap-1.5">
-                100+ cities
-              </span>
-              <span className="flex items-center gap-1.5">
-                500+ bus operators
-              </span>
-              <span className="flex items-center gap-1.5">
-                4.8★ rating
-              </span>
-            </motion.div>
           </div>
 
           <div className="hidden lg:block h-32" />
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+          className="mt-12 md:mt-16 flex flex-wrap items-center justify-center gap-4 md:gap-8 text-muted-foreground text-xs md:text-sm"
+        >
+          <span className="flex items-center gap-1.5 bg-slate-500/5 dark:bg-slate-400/5 px-4 py-2 rounded-full border border-border/50 backdrop-blur-sm hover:bg-slate-500/10 dark:hover:bg-slate-400/10 transition-colors">
+            100+ cities
+          </span>
+          <span className="flex items-center gap-1.5 bg-slate-500/5 dark:bg-slate-400/5 px-4 py-2 rounded-full border border-border/50 backdrop-blur-sm hover:bg-slate-500/10 dark:hover:bg-slate-400/10 transition-colors">
+            500+ bus operators
+          </span>
+          <span className="flex items-center gap-1.5 bg-slate-500/5 dark:bg-slate-400/5 px-4 py-2 rounded-full border border-border/50 backdrop-blur-sm hover:bg-slate-500/10 dark:hover:bg-slate-400/10 transition-colors">
+            4.8★ rating
+          </span>
+        </motion.div>
       </div>
     </section>
   );

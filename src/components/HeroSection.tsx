@@ -332,7 +332,7 @@ const HeroSection = () => {
             {/* Glowing backdrop effect behind image */}
             <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full hidden lg:block" />
             <img
-              src="/assets/missed-bus-illustration.png"
+              src="/assets/RideSync copy.png"
               alt="Travelers missing bus"
               className="w-full max-w-[550px] xl:max-w-[650px] h-auto object-contain relative z-10 drop-shadow-2xl"
             />

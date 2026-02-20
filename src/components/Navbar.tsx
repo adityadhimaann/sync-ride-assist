@@ -58,7 +58,7 @@ const Navbar = () => {
         transition={{ duration: 0.5, ease: "easeOut" }}
         className={`fixed z-50 transition-all duration-500 ${isTrackingPage
           ? "hidden md:flex md:top-0 md:left-0 md:bottom-0 md:w-24 md:h-full md:border-r border-border/40 bg-card/80 backdrop-blur-3xl overflow-y-auto overflow-x-hidden"
-          : "top-0 left-0 right-0 h-16 md:h-20 border-b border-border/40 bg-background/80 backdrop-blur-xl"
+          : "top-0 left-0 right-0 h-16 md:h-20 border-b border-primary/20 bg-[#1a44a1]/95 backdrop-blur-xl shadow-lg"
           }`}
       >
         <div className={`flex h-full px-4 md:px-8 ${isTrackingPage ? "flex-col py-6 items-center w-full" : "max-w-7xl mx-auto items-center justify-between w-full"
@@ -67,8 +67,8 @@ const Navbar = () => {
             {isTrackingPage ? (
               <img src="/assets/RideSync (1).svg" alt="SyncRide" className="h-10 w-auto" />
             ) : (
-              <span className="text-xl md:text-2xl font-black tracking-tight">
-                <span className="text-primary">Sync</span><span className="text-secondary">Ride</span>
+              <span className="text-xl md:text-2xl font-black tracking-tight text-white">
+                Sync<span className="text-secondary">Ride</span>
               </span>
             )}
           </Link>
@@ -85,7 +85,7 @@ const Navbar = () => {
                   title={item.label}
                   className={`transition-all flex items-center gap-2 ${isTrackingPage
                     ? `p-3 rounded-2xl ${isActive ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30" : "text-muted-foreground hover:bg-accent"}`
-                    : `px-2 lg:px-3 xl:px-4 py-2 rounded-xl text-sm font-semibold ${isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-accent"}`
+                    : `px-2 lg:px-3 xl:px-4 py-2 rounded-xl text-sm font-semibold ${isActive ? "bg-white/20 text-white shadow-sm" : "text-white/70 hover:text-white hover:bg-white/10"}`
                     }`}
                 >
                   <Icon className={`${isTrackingPage ? "h-6 w-6" : "h-4 w-4"}`} />
@@ -122,7 +122,7 @@ const Navbar = () => {
                   </div>
                 </Link>
                 {!isTrackingPage ? (
-                  <Button variant="outline" size="sm" onClick={handleLogout} className="rounded-xl font-bold">
+                  <Button variant="outline" size="sm" onClick={handleLogout} className="rounded-xl font-bold bg-white/10 text-white border-none hover:bg-white/20 hover:text-white">
                     <LogOut className="h-4 w-4 xl:mr-2" />
                     <span className="hidden xl:inline">Logout</span>
                   </Button>
@@ -135,11 +135,13 @@ const Navbar = () => {
             ) : (
               <div className={`flex ${isTrackingPage ? "flex-col gap-4" : "hidden md:flex items-center gap-2"}`}>
                 <Link to="/login">
-                  <Button variant="ghost" size="sm" className="font-bold">{isTrackingPage ? "L" : "Login"}</Button>
+                  <Button variant="ghost" size="sm" className={`font-bold ${!isTrackingPage ? "text-white hover:bg-white/10 hover:text-white" : ""}`}>
+                    {isTrackingPage ? "L" : "Login"}
+                  </Button>
                 </Link>
                 {!isTrackingPage && (
                   <Link to="/signup">
-                    <Button variant="hero" size="sm" className="px-6">Sign Up</Button>
+                    <Button variant="hero" size="sm" className="px-6 bg-white text-[#1a44a1] hover:bg-white/90">Sign Up</Button>
                   </Link>
                 )}
               </div>
@@ -172,7 +174,7 @@ const Navbar = () => {
 
               {/* Two bars toggle */}
               <button
-                className="p-1 pl-2 text-foreground focus:outline-none"
+                className={`p-1 pl-2 focus:outline-none ${!isTrackingPage ? "text-white" : "text-foreground"}`}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
                 <div className="flex flex-col gap-1.5 w-6 items-end">

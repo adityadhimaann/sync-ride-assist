@@ -156,169 +156,186 @@ const HeroSection = () => {
 
 
 
-      <div className="container mx-auto relative z-10">
-        <div className=" text-center">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <span className="inline-flex items-center md:px-4 md:py-2 rounded-full bg-primary/10 backdrop-blur-md text-primary/90 text-xs md:text-sm font-medium mb-4 md:mb-6">
-              Trusted by 50,000+ travelers across India
-            </span>
-          </motion.div>
+      <div className="container mx-auto px-4 relative z-10 py-12 lg:py-0">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          {/* Left Column: Text & Planner */}
+          <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+              <span className="inline-flex items-center px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-primary/10 backdrop-blur-md text-primary/90 text-xs md:text-sm font-medium mb-4 md:mb-6">
+                Trusted by 50,000+ travelers across India
+              </span>
+            </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-2xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 md:mb-6 leading-tight"
-          >
-            Never Miss Your
-            <br />
-            <span className="text-secondary">
-              Intercity Bus
-            </span>{" "}
-            Again
-          </motion.h1>
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="text-2xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 md:mb-6 leading-tight"
+            >
+              Never Miss Your
+              <br />
+              <span className="text-secondary">
+                Intercity Bus
+              </span>{" "}
+              Again
+            </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-base md:text-xl text-muted-foreground mb-6 md:mb-10 max-w-xl mx-auto px-2"
-          >
-            Smart last-mile coordination with guaranteed arrival protection.
-            From your doorstep to your destination, stress-free.
-          </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="text-base md:text-xl text-muted-foreground mb-6 md:mb-10 max-w-2xl px-2 lg:px-0"
+            >
+              Smart last-mile coordination with guaranteed arrival protection.
+              <br className="hidden md:block" />
+              From your doorstep to your destination, stress-free.
+            </motion.p>
 
-          {/* Journey Planner Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="w-full max-w-2xl bg-card/95 backdrop-blur-xl rounded-2xl md:rounded-3xl p-4 md:p-8 shadow-2xl mx-auto relative overflow-hidden"
-          >
-            <div className="space-y-4">
-              {/* Start Point */}
-              <div className="relative group">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-success z-20" />
-                <input
-                  type="text"
-                  placeholder="Your home address"
-                  value={startPoint}
-                  onChange={(e) => setStartPoint(e.target.value)}
-                  onFocus={() => { setActiveField("start"); setShowSuggestions(true); }}
-                  className="w-full h-12 pl-12 pr-12 rounded-xl border-2 border-border bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-all"
-                />
-                <button
-                  onClick={handleLocateMe}
-                  disabled={locating}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-primary transition-colors z-20"
-                  title="Use current location"
+            {/* Journey Planner Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="w-full max-w-2xl bg-card/95 backdrop-blur-xl rounded-2xl md:rounded-3xl p-4 md:p-8 shadow-2xl relative overflow-hidden mx-auto lg:mx-0"
+            >
+              <div className="space-y-4">
+                {/* Start Point */}
+                <div className="relative group">
+                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-success z-20" />
+                  <input
+                    type="text"
+                    placeholder="Your home address"
+                    value={startPoint}
+                    onChange={(e) => setStartPoint(e.target.value)}
+                    onFocus={() => { setActiveField("start"); setShowSuggestions(true); }}
+                    className="w-full h-12 pl-12 pr-12 rounded-xl border-2 border-border bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-all"
+                  />
+                  <button
+                    onClick={handleLocateMe}
+                    disabled={locating}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-primary transition-colors z-20"
+                    title="Use current location"
+                  >
+                    {locating ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Navigation className="h-4 w-4" />}
+                  </button>
+                  {activeField === "start" && <SuggestionsList currentQuery={startPoint} onSelect={(val) => { setStartPoint(val); setShowSuggestions(false); }} visible={showSuggestions} />}
+                </div>
+
+                {/* Bus Boarding Point */}
+                <div className="relative group">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 z-20">
+                    <img src="/assets/RideSync (1).svg" className="h-5 w-5" alt="Bus" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Bus boarding point"
+                    value={busStation}
+                    onChange={(e) => setBusStation(e.target.value)}
+                    onFocus={() => { setActiveField("bus"); setShowSuggestions(true); }}
+                    className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-all"
+                  />
+                  {activeField === "bus" && <SuggestionsList currentQuery={busStation} onSelect={(val) => { setBusStation(val); setShowSuggestions(false); }} visible={showSuggestions} />}
+                </div>
+
+                {/* Final Destination */}
+                <div className="relative group">
+                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-destructive z-20" />
+                  <input
+                    type="text"
+                    placeholder="Final destination"
+                    value={destination}
+                    onChange={(e) => setDestination(e.target.value)}
+                    onFocus={() => { setActiveField("dest"); setShowSuggestions(true); }}
+                    className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-all"
+                  />
+                  {activeField === "dest" && <SuggestionsList currentQuery={destination} onSelect={(val) => { setDestination(val); setShowSuggestions(false); }} visible={showSuggestions} />}
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4 w-full">
+                  <div className="relative w-full sm:flex-1 min-w-0">
+                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none z-20" />
+                    <input
+                      type={date ? "date" : "text"}
+                      placeholder="Date of journey"
+                      onFocus={(e) => (e.target.type = "date")}
+                      onBlur={(e) => {
+                        if (!e.target.value) e.target.type = "text";
+                      }}
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                      className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-all"
+                    />
+                  </div>
+                  <div className="relative w-full sm:flex-1 min-w-0">
+                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none z-20" />
+                    <input
+                      type={time ? "time" : "text"}
+                      placeholder="Time of journey"
+                      onFocus={(e) => (e.target.type = "time")}
+                      onBlur={(e) => {
+                        if (!e.target.value) e.target.type = "text";
+                      }}
+                      value={time}
+                      onChange={(e) => setTime(e.target.value)}
+                      className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                <Button
+                  variant="hero"
+                  size="xl"
+                  className="w-full"
+                  onClick={handlePlanJourney}
+                  disabled={loading}
                 >
-                  {locating ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Navigation className="h-4 w-4" />}
-                </button>
-                {activeField === "start" && <SuggestionsList currentQuery={startPoint} onSelect={(val) => { setStartPoint(val); setShowSuggestions(false); }} visible={showSuggestions} />}
+                  {loading ? (
+                    <>
+                      <img src="/assets/RideSync.gif" className="h-6 w-auto object-contain mr-2" alt="Loading" />
+                      Finding Best Routes...
+                    </>
+                  ) : (
+                    <>
+                      Plan My Journey
+                      <ArrowRight className="h-5 w-5" />
+                    </>
+                  )}
+                </Button>
               </div>
+            </motion.div>
 
-              {/* Bus Boarding Point */}
-              <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 z-20">
-                  <img src="/assets/RideSync (1).svg" className="h-5 w-5" alt="Bus" />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Bus boarding point"
-                  value={busStation}
-                  onChange={(e) => setBusStation(e.target.value)}
-                  onFocus={() => { setActiveField("bus"); setShowSuggestions(true); }}
-                  className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-all"
-                />
-                {activeField === "bus" && <SuggestionsList currentQuery={busStation} onSelect={(val) => { setBusStation(val); setShowSuggestions(false); }} visible={showSuggestions} />}
-              </div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+              className="mt-6 md:mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-4 md:gap-6 text-muted-foreground text-xs md:text-sm"
+            >
+              <span className="flex items-center gap-1.5">
+                100+ cities
+              </span>
+              <span className="flex items-center gap-1.5">
+                500+ bus operators
+              </span>
+              <span className="flex items-center gap-1.5">
+                4.8★ rating
+              </span>
+            </motion.div>
+          </div>
 
-              {/* Final Destination */}
-              <div className="relative group">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-destructive z-20" />
-                <input
-                  type="text"
-                  placeholder="Final destination"
-                  value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
-                  onFocus={() => { setActiveField("dest"); setShowSuggestions(true); }}
-                  className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-all"
-                />
-                {activeField === "dest" && <SuggestionsList currentQuery={destination} onSelect={(val) => { setDestination(val); setShowSuggestions(false); }} visible={showSuggestions} />}
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4 w-full">
-                <div className="relative w-full sm:flex-1 min-w-0">
-                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none z-20" />
-                  <input
-                    type={date ? "date" : "text"}
-                    placeholder="Date of journey"
-                    onFocus={(e) => (e.target.type = "date")}
-                    onBlur={(e) => {
-                      if (!e.target.value) e.target.type = "text";
-                    }}
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-all"
-                  />
-                </div>
-                <div className="relative w-full sm:flex-1 min-w-0">
-                  <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none z-20" />
-                  <input
-                    type={time ? "time" : "text"}
-                    placeholder="Time of journey"
-                    onFocus={(e) => (e.target.type = "time")}
-                    onBlur={(e) => {
-                      if (!e.target.value) e.target.type = "text";
-                    }}
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
-                    className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-all"
-                  />
-                </div>
-              </div>
-
-              <Button
-                variant="hero"
-                size="xl"
-                className="w-full"
-                onClick={handlePlanJourney}
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <img src="/assets/RideSync.gif" className="h-6 w-auto object-contain mr-2" alt="Loading" />
-                    Finding Best Routes...
-                  </>
-                ) : (
-                  <>
-                    Plan My Journey
-                    <ArrowRight className="h-5 w-5" />
-                  </>
-                )}
-              </Button>
-            </div>
-          </motion.div>
-
+          {/* Right Column: Illustration */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="mt-6 md:mt-8 flex items-center justify-center gap-4 md:gap-6 text-muted-foreground text-xs md:text-sm"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="hidden lg:flex justify-center items-center w-full relative"
           >
-            <span className="flex items-center gap-1.5">
-
-              100+ cities
-            </span>
-            <span className="flex items-center gap-1.5">
-
-              500+ bus operators
-            </span>
-            <span className="flex items-center gap-1.5">
-
-              4.8★ rating
-            </span>
+            {/* Glowing backdrop effect behind image */}
+            <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full hidden lg:block" />
+            <img
+              src="/assets/missed-bus-illustration.png"
+              alt="Travelers missing bus"
+              className="w-full max-w-[550px] xl:max-w-[650px] h-auto object-contain relative z-10 drop-shadow-2xl"
+            />
           </motion.div>
         </div>
       </div>

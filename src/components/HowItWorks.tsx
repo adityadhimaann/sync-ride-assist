@@ -74,20 +74,20 @@ const HowItWorks = () => {
             <svg className="w-full h-full" viewBox="0 0 1000 1000" preserveAspectRatio="none">
               <path
                 d="M 150 0 L 150 1000"
-                className="stroke-slate-100 dark:stroke-slate-900/30 stroke-[30] md:stroke-[50] fill-none"
+                className="stroke-slate-100 dark:stroke-slate-900/30 stroke-[80] md:stroke-[120] fill-none"
               />
               <path
                 d="M 150 0 L 150 1000"
-                className="stroke-slate-800 dark:stroke-slate-900/60 stroke-[2] md:stroke-[3] stroke-dasharray-[15,20] fill-none"
+                className="stroke-slate-800 dark:stroke-slate-900/40 stroke-[3] md:stroke-[4] stroke-dasharray-[20,30] fill-none"
               />
               <motion.path
                 d="M 150 0 L 150 1000"
                 style={{ pathLength: smoothProgress }}
-                className="stroke-primary/40 stroke-[32] md:stroke-[52] fill-none blur-md"
+                className="stroke-primary/40 stroke-[82] md:stroke-[122] fill-none blur-md"
               />
             </svg>
 
-            {/* The Smaller Scrolling Bus */}
+            {/* The Scaled-Down Scrolling Bus */}
             <motion.div
               style={{
                 y: busY,
@@ -95,30 +95,30 @@ const HowItWorks = () => {
               }}
               className="absolute top-0 z-30 -translate-x-1/2"
             >
-              <div className="relative w-16 md:w-24 h-28 md:h-36 drop-shadow-xl flex flex-col items-center">
-                <div className="w-full h-full bg-primary rounded-xl overflow-hidden shadow-2xl flex flex-col border-x-2 md:border-x-4 border-black/10">
-                  <div className="w-3/4 h-1.5 bg-white/20 rounded-b-lg mx-auto" />
+              <div className="relative w-12 md:w-16 h-20 md:h-28 drop-shadow-xl flex flex-col items-center">
+                <div className="w-full h-full bg-primary rounded-lg md:rounded-xl overflow-hidden shadow-2xl flex flex-col border-x-2 md:border-x-[3px] border-black/10">
+                  <div className="w-3/4 h-1 bg-white/20 rounded-b-lg mx-auto" />
 
-                  {/* Front windshield */}
-                  <div className="mx-1.5 mt-2 h-8 md:h-12 bg-slate-900/95 rounded-t-lg shadow-inner relative" />
+                  {/* Compact windshield */}
+                  <div className="mx-1 mt-1.5 h-6 md:h-8 bg-slate-900/95 rounded-t-md shadow-inner relative" />
 
                   {/* Windows */}
-                  <div className="mx-1.5 mt-1.5 flex flex-col gap-1 flex-1">
-                    <div className="h-4 md:h-6 bg-slate-900/80 rounded-sm" />
-                    <div className="h-4 md:h-6 bg-slate-900/80 rounded-sm" />
+                  <div className="mx-1 mt-1 flex flex-col gap-0.5 flex-1">
+                    <div className="h-3 md:h-4 bg-slate-900/80 rounded-sm" />
+                    <div className="h-3 md:h-4 bg-slate-900/80 rounded-sm" />
                   </div>
 
-                  {/* Lights */}
-                  <div className="mt-auto flex justify-between px-2 pb-2">
-                    <div className="w-2.5 h-2.5 bg-yellow-200 rounded-full shadow-[0_0_10px_rgba(253,224,71,0.8)]" />
-                    <div className="w-2.5 h-2.5 bg-yellow-200 rounded-full shadow-[0_0_10px_rgba(253,224,71,0.8)]" />
+                  {/* Tiny Lights */}
+                  <div className="mt-auto flex justify-between px-1.5 pb-1.5">
+                    <div className="w-2 h-1.5 bg-yellow-200 rounded-full shadow-[0_0_8px_rgba(253,224,71,0.8)]" />
+                    <div className="w-2 h-1.5 bg-yellow-200 rounded-full shadow-[0_0_8px_rgba(253,224,71,0.8)]" />
                   </div>
                 </div>
-                {/* Tiny Wheels */}
-                <div className="absolute top-1/4 -left-1 w-2 md:w-3 h-8 bg-slate-950 rounded-l-md" />
-                <div className="absolute top-1/4 -right-1 w-2 md:w-3 h-8 bg-slate-950 rounded-r-md" />
-                <div className="absolute top-3/4 -left-1 w-2 md:w-3 h-8 bg-slate-950 rounded-l-md" />
-                <div className="absolute top-3/4 -right-1 w-2 md:w-3 h-8 bg-slate-950 rounded-r-md" />
+                {/* Micro Wheels */}
+                <div className="absolute top-1/5 -left-1 w-1.5 md:w-2 h-6 bg-slate-950 rounded-l-md" />
+                <div className="absolute top-1/5 -right-1 w-1.5 md:w-2 h-6 bg-slate-950 rounded-r-md" />
+                <div className="absolute top-3/4 -left-1 w-1.5 md:w-2 h-6 bg-slate-950 rounded-l-md" />
+                <div className="absolute top-3/4 -right-1 w-1.5 md:w-2 h-6 bg-slate-950 rounded-r-md" />
               </div>
             </motion.div>
           </div>

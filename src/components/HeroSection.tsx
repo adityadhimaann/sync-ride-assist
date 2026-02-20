@@ -249,22 +249,32 @@ const HeroSection = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 w-full">
-                <div className="relative w-full sm:flex-1 min-w-0 flex">
-                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <div className="relative w-full sm:flex-1 min-w-0">
+                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none z-20" />
                   <input
-                    type="date"
+                    type={date ? "date" : "text"}
+                    placeholder="Date of journey"
+                    onFocus={(e) => (e.target.type = "date")}
+                    onBlur={(e) => {
+                      if (!e.target.value) e.target.type = "text";
+                    }}
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full flex-1 max-w-full h-11 pl-11 pr-3 rounded-xl border-2 border-border bg-background text-foreground text-sm focus:border-primary focus:outline-none transition-colors outline-none"
+                    className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-all"
                   />
                 </div>
-                <div className="relative w-full sm:flex-1 min-w-0 flex">
-                  <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <div className="relative w-full sm:flex-1 min-w-0">
+                  <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none z-20" />
                   <input
-                    type="time"
+                    type={time ? "time" : "text"}
+                    placeholder="Time of journey"
+                    onFocus={(e) => (e.target.type = "time")}
+                    onBlur={(e) => {
+                      if (!e.target.value) e.target.type = "text";
+                    }}
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
-                    className="w-full flex-1 max-w-full h-11 pl-11 pr-3 rounded-xl border-2 border-border bg-background text-foreground text-sm focus:border-primary focus:outline-none transition-colors outline-none"
+                    className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-all"
                   />
                 </div>
               </div>

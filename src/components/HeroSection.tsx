@@ -156,27 +156,25 @@ const HeroSection = () => {
 
 
 
-      <div className="container mx-auto px-4 relative z-10 py-12 lg:py-0">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          {/* Left Column: Text & Planner */}
-          <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
+      <div className="container mx-auto px-4 relative z-10 py-12">
+        <div className="flex flex-col items-center justify-center max-w-4xl mx-auto">
+          {/* Main Content: Text & Planner */}
+          <div className="flex flex-col items-center text-center w-full mb-12">
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
               <span className="inline-flex items-center px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-primary/10 backdrop-blur-md text-primary/90 text-xs md:text-sm font-medium mb-4 md:mb-6">
                 Trusted by 50,000+ travelers across India
               </span>
             </motion.div>
 
-
-
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-2xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 md:mb-6 leading-tight"
+              className="text-3xl md:text-5xl lg:text-6xl font-black text-foreground mb-6 leading-tight tracking-tight"
             >
               Never Miss Your
               <br />
-              <span className="text-secondary">
+              <span className="text-secondary drop-shadow-sm">
                 Intercity Bus
               </span>{" "}
               Again
@@ -186,7 +184,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-base md:text-xl text-muted-foreground mb-6 md:mb-10 max-w-2xl px-2 lg:px-0"
+              className="text-base md:text-xl text-muted-foreground mb-10 max-w-2xl px-2 opacity-90"
             >
               Smart last-mile coordination with guaranteed arrival protection.
               <br className="hidden md:block" />
@@ -198,24 +196,24 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3 }}
-              className="w-full max-w-2xl bg-card/95 backdrop-blur-xl rounded-2xl md:rounded-3xl p-4 md:p-8 shadow-2xl relative overflow-hidden mx-auto lg:mx-0"
+              className="w-full max-w-2xl bg-card/95 backdrop-blur-2xl rounded-3xl p-6 md:p-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] dark:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.4)] relative border border-border/50"
             >
-              <div className="space-y-4">
+              <div className="space-y-5">
                 {/* Start Point */}
                 <div className="relative group">
-                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-success z-20" />
+                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-success/80 z-20" />
                   <input
                     type="text"
                     placeholder="Your home address"
                     value={startPoint}
                     onChange={(e) => setStartPoint(e.target.value)}
                     onFocus={() => { setActiveField("start"); setShowSuggestions(true); }}
-                    className="w-full h-12 pl-12 pr-12 rounded-xl border-2 border-border bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-all"
+                    className="w-full h-14 pl-12 pr-12 rounded-2xl border-2 border-border/50 bg-background/50 hover:bg-background focus:bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none transition-all shadow-sm"
                   />
                   <button
                     onClick={handleLocateMe}
                     disabled={locating}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-primary transition-colors z-20"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl hover:bg-muted text-muted-foreground hover:text-primary transition-colors z-20"
                     title="Use current location"
                   >
                     {locating ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Navigation className="h-4 w-4" />}
@@ -225,7 +223,7 @@ const HeroSection = () => {
 
                 {/* Bus Boarding Point */}
                 <div className="relative group">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 z-20">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 z-20 opacity-80">
                     <img src="/assets/RideSync (1).svg" className="h-5 w-5" alt="Bus" />
                   </div>
                   <input
@@ -234,28 +232,28 @@ const HeroSection = () => {
                     value={busStation}
                     onChange={(e) => setBusStation(e.target.value)}
                     onFocus={() => { setActiveField("bus"); setShowSuggestions(true); }}
-                    className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-all"
+                    className="w-full h-14 pl-12 pr-4 rounded-2xl border-2 border-border/50 bg-background/50 hover:bg-background focus:bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none transition-all shadow-sm"
                   />
                   {activeField === "bus" && <SuggestionsList currentQuery={busStation} onSelect={(val) => { setBusStation(val); setShowSuggestions(false); }} visible={showSuggestions} />}
                 </div>
 
                 {/* Final Destination */}
                 <div className="relative group">
-                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-destructive z-20" />
+                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-destructive/80 z-20" />
                   <input
                     type="text"
                     placeholder="Final destination"
                     value={destination}
                     onChange={(e) => setDestination(e.target.value)}
                     onFocus={() => { setActiveField("dest"); setShowSuggestions(true); }}
-                    className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-all"
+                    className="w-full h-14 pl-12 pr-4 rounded-2xl border-2 border-border/50 bg-background/50 hover:bg-background focus:bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none transition-all shadow-sm"
                   />
                   {activeField === "dest" && <SuggestionsList currentQuery={destination} onSelect={(val) => { setDestination(val); setShowSuggestions(false); }} visible={showSuggestions} />}
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4 w-full">
+                <div className="flex flex-col sm:flex-row gap-5 w-full">
                   <div className="relative w-full sm:flex-1 min-w-0">
-                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none z-20" />
+                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/60 pointer-events-none z-20" />
                     <input
                       type={date ? "date" : "text"}
                       placeholder="Date of journey"
@@ -265,11 +263,11 @@ const HeroSection = () => {
                       }}
                       value={date}
                       onChange={(e) => setDate(e.target.value)}
-                      className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-all"
+                      className="w-full h-14 pl-12 pr-4 rounded-2xl border-2 border-border/50 bg-background/50 hover:bg-background focus:bg-background text-foreground text-sm md:text-base focus:border-primary focus:outline-none transition-all shadow-sm"
                     />
                   </div>
                   <div className="relative w-full sm:flex-1 min-w-0">
-                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none z-20" />
+                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/60 pointer-events-none z-20" />
                     <input
                       type={time ? "time" : "text"}
                       placeholder="Time of journey"
@@ -279,7 +277,7 @@ const HeroSection = () => {
                       }}
                       value={time}
                       onChange={(e) => setTime(e.target.value)}
-                      className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-border bg-background text-foreground text-sm md:text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-all"
+                      className="w-full h-14 pl-12 pr-4 rounded-2xl border-2 border-border/50 bg-background/50 hover:bg-background focus:bg-background text-foreground text-sm md:text-base focus:border-primary focus:outline-none transition-all shadow-sm"
                     />
                   </div>
                 </div>
@@ -287,48 +285,45 @@ const HeroSection = () => {
                 <Button
                   variant="hero"
                   size="xl"
-                  className="w-full"
+                  className="w-full h-16 text-lg font-bold rounded-2xl shadow-xl shadow-primary/20 hover:shadow-primary/30 active:scale-[0.98] transition-all"
                   onClick={handlePlanJourney}
                   disabled={loading}
                 >
                   {loading ? (
-                    <>
-                      <img src="/assets/RideSync.gif" className="h-6 w-auto object-contain mr-2" alt="Loading" />
-                      Finding Best Routes...
-                    </>
+                    <div className="flex items-center gap-3">
+                      <img src="/assets/RideSync.gif" className="h-8 w-auto" alt="Loading" />
+                      <span>Finding Best Routes...</span>
+                    </div>
                   ) : (
-                    <>
-                      Plan My Journey
-                      <ArrowRight className="h-5 w-5" />
-                    </>
+                    <div className="flex items-center justify-center gap-2">
+                      <span>Plan My Journey</span>
+                      <ArrowRight className="h-6 w-6" />
+                    </div>
                   )}
                 </Button>
               </div>
             </motion.div>
-
           </div>
 
-          <div className="hidden lg:block h-32" />
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 0.5 }}
+            className="flex flex-wrap items-center justify-center gap-4 md:gap-8 text-muted-foreground text-xs md:text-sm"
+          >
+            <span className="flex items-center gap-2 bg-slate-500/5 dark:bg-slate-400/5 px-6 py-2.5 rounded-full border border-border/40 backdrop-blur-md shadow-sm">
+              100+ cities
+            </span>
+            <span className="flex items-center gap-2 bg-slate-500/5 dark:bg-slate-400/5 px-6 py-2.5 rounded-full border border-border/40 backdrop-blur-md shadow-sm">
+              500+ bus operators
+            </span>
+            <span className="flex items-center gap-2 bg-slate-500/5 dark:bg-slate-400/5 px-6 py-2.5 rounded-full border border-border/40 backdrop-blur-md shadow-sm">
+              4.8★ rating
+            </span>
+          </motion.div>
         </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
-          className="mt-12 md:mt-16 flex flex-wrap items-center justify-center gap-4 md:gap-8 text-muted-foreground text-xs md:text-sm"
-        >
-          <span className="flex items-center gap-1.5 bg-slate-500/5 dark:bg-slate-400/5 px-4 py-2 rounded-full border border-border/50 backdrop-blur-sm hover:bg-slate-500/10 dark:hover:bg-slate-400/10 transition-colors">
-            100+ cities
-          </span>
-          <span className="flex items-center gap-1.5 bg-slate-500/5 dark:bg-slate-400/5 px-4 py-2 rounded-full border border-border/50 backdrop-blur-sm hover:bg-slate-500/10 dark:hover:bg-slate-400/10 transition-colors">
-            500+ bus operators
-          </span>
-          <span className="flex items-center gap-1.5 bg-slate-500/5 dark:bg-slate-400/5 px-4 py-2 rounded-full border border-border/50 backdrop-blur-sm hover:bg-slate-500/10 dark:hover:bg-slate-400/10 transition-colors">
-            4.8★ rating
-          </span>
-        </motion.div>
       </div>
-    </section>
+    </section >
   );
 };
 

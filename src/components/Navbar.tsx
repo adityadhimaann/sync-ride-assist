@@ -64,9 +64,13 @@ const Navbar = () => {
         <div className={`flex h-full px-4 md:px-8 ${isTrackingPage ? "flex-col py-6 items-center w-full" : "max-w-7xl mx-auto items-center justify-between w-full"
           }`}>
           <Link to="/" className={`flex items-center gap-2 ${isTrackingPage ? "mb-10" : ""}`}>
-            <span className="text-xl md:text-2xl font-black tracking-tight">
-              <span className="text-primary">Sync</span><span className="text-secondary">Ride</span>
-            </span>
+            {isTrackingPage ? (
+              <img src="/assets/RideSync (1).svg" alt="SyncRide" className="h-10 w-auto" />
+            ) : (
+              <span className="text-xl md:text-2xl font-black tracking-tight">
+                <span className="text-primary">Sync</span><span className="text-secondary">Ride</span>
+              </span>
+            )}
           </Link>
 
           {/* Nav Items */}

@@ -46,45 +46,81 @@ const HowItWorks = () => {
     restDelta: 0.001
   });
 
-  // Bus movement transforms
-  // The road is vertical on the left, then curves horizontal at the top
-  // Path: (Left side 20%) -> Bottom to Top -> Curve -> Top Horizontal
-  const busY = useTransform(smoothProgress, [0, 0.8, 1], ["100%", "0%", "0%"]);
-  const busX = useTransform(smoothProgress, [0, 0.8, 1], ["0%", "0%", "50vw"]);
-  const busRotate = useTransform(smoothProgress, [0, 0.75, 0.85, 1], [0, 0, -90, -90]);
+  // Bus movement transforms - scrolling DOWN the track
+  // Road at 15% width (M 150 in 1000 viewBox)
+  const busY = useTransform(smoothProgress, [0, 1], ["0%", "95%"]);
 
   return (
     <section ref={containerRef} className="py-24 md:py-40 bg-transparent relative overflow-visible">
+
       {/* Scroll-Responsive Road Background */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         <svg className="w-full h-full" viewBox="0 0 1000 1000" preserveAspectRatio="none">
-          {/* Main Road Path: Vertical line on left, curves out at the top */}
+          {/* Main Road Path: Vertical line on left */}
           <path
-            d="M 150 1000 L 150 150 Q 150 50 300 50 L 1000 50"
+            d="M 150 0 L 150 1000"
             className="stroke-slate-800 dark:stroke-slate-900/40 stroke-[40] md:stroke-[60] fill-none"
           />
           {/* Dashed Center line */}
           <path
-            d="M 150 1000 L 150 150 Q 150 50 300 50 L 1000 50"
+            d="M 150 0 L 150 1000"
             className="stroke-white/30 stroke-[3] md:stroke-[4] stroke-dasharray-[20,25] fill-none"
           />
           {/* Journey Progress (Glowing highlight) */}
           <motion.path
-            d="M 150 1000 L 150 150 Q 150 50 300 50 L 1000 50"
+            d="M 150 0 L 150 1000"
             style={{ pathLength: smoothProgress }}
             className="stroke-primary/40 stroke-[42] md:stroke-[62] fill-none blur-md"
           />
         </svg>
+
+        {/* The Scrolling Bus - Mounted on the vertical track */}
+        <motion.div
+          style={{
+            y: busY,
+            left: "15%", // Matches M 150 in 1000px
+          }}
+          className="absolute top-0 z-30 -translate-x-1/2"
+        >
+          <div className="relative w-24 md:w-32 h-40 md:h-52 drop-shadow-2xl flex flex-col items-center">
+            {/* Bus Body (Vertical orientation for top-down road) */}
+            <div className="w-full h-full bg-primary rounded-2xl overflow-hidden shadow-2xl flex flex-col border-x-4 border-black/10">
+              <div className="w-3/4 h-2 bg-white/20 rounded-b-lg mx-auto" />
+
+              {/* Front windshield */}
+              <div className="mx-2 mt-4 h-12 md:h-16 bg-slate-900/90 rounded-t-lg shadow-inner relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent" />
+              </div>
+
+              {/* Passenger windows */}
+              <div className="mx-2 mt-2 flex flex-col gap-1.5 flex-1">
+                <div className="h-6 md:h-8 bg-slate-900/80 rounded-sm" />
+                <div className="h-6 md:h-8 bg-slate-900/80 rounded-sm" />
+                <div className="h-6 md:h-8 bg-slate-900/80 rounded-sm" />
+              </div>
+
+              {/* Lights (Headlights) */}
+              <div className="mt-auto flex justify-between px-3 pb-3">
+                <div className="w-4 h-4 bg-yellow-200 rounded-full shadow-[0_0_15px_rgba(253,224,71,0.8)]" />
+                <div className="w-4 h-4 bg-yellow-200 rounded-full shadow-[0_0_15px_rgba(253,224,71,0.8)]" />
+              </div>
+            </div>
+            {/* Wheels tucked under body */}
+            <div className="absolute top-1/4 -left-2 w-4 h-12 bg-slate-950 rounded-l-xl" />
+            <div className="absolute top-1/4 -right-2 w-4 h-12 bg-slate-950 rounded-r-xl" />
+            <div className="absolute top-3/4 -left-2 w-4 h-12 bg-slate-950 rounded-l-xl" />
+            <div className="absolute top-3/4 -right-2 w-4 h-12 bg-slate-950 rounded-r-xl" />
+          </div>
+        </motion.div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start relative z-10">
-        {/* Left Column: The Journey Steps */}
-        <div className="space-y-12 md:space-y-20 pl-4 md:pl-20 border-l-4 border-dashed border-primary/20 ml-4 md:ml-12">
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="space-y-24 md:space-y-40 pl-[25%] md:pl-[30%]">
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="mb-8"
+            className="mb-12"
           >
             <h2 className="text-3xl md:text-5xl font-black text-foreground mb-4">How It Works</h2>
             <p className="text-muted-foreground text-lg md:text-xl max-w-md">
@@ -95,67 +131,28 @@ const HowItWorks = () => {
           {steps.map((step, i) => (
             <motion.div
               key={step.step}
-              initial={{ opacity: 0, x: -30 }}
+              initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="relative flex flex-col gap-4 group"
+              className="relative flex flex-col gap-6 group"
             >
               <div className="flex items-center gap-6">
                 <div className="relative">
-                  <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-primary flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-                    <step.icon className="h-7 w-7 md:h-8 md:w-8 text-white" />
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-slate-50 dark:bg-slate-900 border-2 border-primary/20 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+                    <step.icon className="h-8 w-8 md:h-10 md:w-10 text-primary" />
                   </div>
                   <span className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-secondary text-white text-xs font-black flex items-center justify-center shadow-lg border-2 border-background">
                     {step.step}
                   </span>
                 </div>
-                <h3 className="text-xl md:text-3xl font-black text-foreground group-hover:text-primary transition-colors">{step.title}</h3>
+                <h3 className="text-2xl md:text-4xl font-black text-foreground group-hover:text-primary transition-colors">{step.title}</h3>
               </div>
-              <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-lg md:pl-20">
+              <p className="text-muted-foreground text-lg md:text-xl leading-relaxed max-w-xl">
                 {step.description}
               </p>
             </motion.div>
           ))}
-        </div>
-
-        {/* Right Column: Scrolling Bus View */}
-        <div className="hidden lg:flex sticky top-40 h-[600px] flex-col items-center justify-center overflow-visible">
-          {/* Road Perspective Container */}
-          <div className="relative w-full h-full flex items-center justify-center">
-            {/* The Scrolling Bus */}
-            <motion.div
-              style={{
-                y: busY,
-                x: busX,
-                rotate: busRotate
-              }}
-              className="relative z-30"
-            >
-              <div className="relative w-48 h-20 drop-shadow-2xl">
-                {/* Bus Body */}
-                <div className="absolute inset-0 bg-primary rounded-2xl overflow-hidden shadow-2xl flex flex-col border-b-4 border-black/20">
-                  <div className="w-1/2 h-2 bg-white/20 rounded-b-lg mx-auto" />
-                  <div className="flex gap-2 mt-3 mx-3 h-6">
-                    <div className="w-1/4 h-full bg-slate-900 rounded-l-lg shadow-inner" />
-                    <div className="flex-1 h-full bg-slate-900 rounded-sm shadow-inner" />
-                    <div className="flex-1 h-full bg-slate-900 rounded-sm shadow-inner" />
-                    <div className="w-1/4 h-full bg-slate-900 rounded-r-lg shadow-inner" />
-                  </div>
-                  <div className="mt-auto flex justify-between px-3 pb-2">
-                    <div className="w-3 h-3 bg-red-600 rounded-full shadow-[0_0_10px_red]" />
-                    <div className="w-4 h-3 bg-yellow-400 rounded-full shadow-[0_0_15px_yellow]" />
-                  </div>
-                </div>
-                {/* Wheels */}
-                <div className="absolute -bottom-3 left-6 w-8 h-8 rounded-full bg-slate-900 border-4 border-slate-400" />
-                <div className="absolute -bottom-3 right-6 w-8 h-8 rounded-full bg-slate-900 border-4 border-slate-400" />
-              </div>
-            </motion.div>
-
-            {/* Background Context Elements */}
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background pointer-events-none" />
-          </div>
         </div>
       </div>
     </section>

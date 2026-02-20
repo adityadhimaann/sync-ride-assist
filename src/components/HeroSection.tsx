@@ -324,207 +324,146 @@ const HeroSection = () => {
 
           {/* Right Column: Coded Animated Illustration */}
           <div className="hidden lg:flex relative w-full aspect-square flex-col items-center justify-center p-8 mx-auto xl:-mr-20 z-20 overflow-visible scale-75 xl:scale-95 -mt-12 xl:-mt-24">
-            {/* Context: Zig Zag Road */}
-            <div className="absolute bottom-[10%] w-[140%] h-64 overflow-hidden -z-10 opacity-30 dark:opacity-20 pointer-events-none">
-              <svg viewBox="0 0 1000 200" className="w-full h-full fill-none stroke-slate-800 dark:stroke-slate-200 stroke-[40]">
-                <path d="M-100,100 Q150,0 400,100 T900,100" strokeDasharray="60 30" />
+            {/* The Road: Vertical -> Zig-Zag -> End Right */}
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-40 dark:opacity-20 overflow-visible">
+              <svg viewBox="0 0 1000 1000" className="w-full h-full fill-none">
+                {/* Main Road Path */}
+                <motion.path
+                  d="M 500 1100 L 500 850 L 200 650 L 800 450 L 950 250"
+                  stroke="currentColor"
+                  className="text-slate-800 dark:text-slate-200"
+                  strokeWidth="80"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                {/* Dashed Center line */}
+                <motion.path
+                  d="M 500 1100 L 500 850 L 200 650 L 800 450 L 950 250"
+                  stroke="white"
+                  strokeWidth="4"
+                  strokeDasharray="30 30"
+                  className="opacity-50"
+                />
+                {/* Road Glow */}
+                <motion.path
+                  d="M 500 1100 L 500 850 L 200 650 L 800 450 L 950 250"
+                  stroke="currentColor"
+                  className="text-primary/10"
+                  strokeWidth="120"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="blur-3xl"
+                />
               </svg>
             </div>
 
-            <div className="absolute inset-0 bg-primary/25 blur-[120px] rounded-full hidden lg:block -z-10 transform -translate-y-12" />
+            <div className="absolute inset-0 bg-primary/20 blur-[150px] rounded-full hidden lg:block -z-10 transform -translate-y-12" />
 
-            {/* Speed Lines from Right */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              {[...Array(5)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ x: -600, opacity: 0 }}
-                  animate={{ x: 600, opacity: [0, 0.5, 0] }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 1 + Math.random(),
-                    delay: i * 0.4,
-                    ease: "linear"
-                  }}
-                  className="absolute h-[2px] bg-sky-400/30 rounded-full"
-                  style={{
-                    top: `${30 + i * 12}%`,
-                    width: `${50 + Math.random() * 100}px`,
-                    transform: 'rotate(5deg)'
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* The Bus - Front View facing Right */}
+            {/* Bus Stop at the End Point (Top Right) */}
             <motion.div
-              animate={{ x: [0, 50, -10, 0], y: [0, -6, 2, 0] }}
-              transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-              className="absolute left-[10%] bottom-[25%] z-20"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="absolute right-[-5%] top-[18%] z-30"
             >
-              {/* Bus Shadow */}
-              <div className="absolute -bottom-6 left-2 right-2 h-8 bg-black/50 blur-lg rounded-[100%]"></div>
-
-              {/* Bus Body (Front) */}
-              <div className="w-72 h-60 bg-slate-50 dark:bg-slate-200 rounded-[40px] rounded-bl-3xl rounded-br-3xl shadow-2xl overflow-hidden relative border-b-[10px] border-slate-300 dark:border-slate-400 flex flex-col items-center z-10">
-                <div className="w-full h-1/2 bg-gradient-to-b from-[#1a44a1]/15 to-transparent absolute top-0"></div>
-
-                {/* Roof unit (AC) */}
-                <div className="absolute -top-1 w-48 h-5 bg-slate-300 border border-slate-400 rounded-b-lg shadow-inner flex items-center justify-around px-4 z-0 opacity-80">
-                  <div className="w-8 h-1 bg-slate-500 rounded-full"></div>
-                  <div className="w-8 h-1 bg-slate-500 rounded-full"></div>
+              <div className="relative">
+                {/* Bus Stop Sign Pole */}
+                <div className="w-2 h-24 md:h-32 bg-slate-500 rounded-full shadow-lg" />
+                {/* Sign Board */}
+                <div className="absolute top-0 -left-6 w-14 h-14 md:w-16 md:h-16 bg-primary rounded-xl flex items-center justify-center shadow-xl border-4 border-white/20">
+                  <Bus className="w-8 h-8 text-white" />
                 </div>
-
-                {/* Windshield (Front) */}
-                <div className="w-64 h-32 bg-slate-800/95 rounded-t-[30px] rounded-b-lg mt-4 relative overflow-hidden border-[5px] border-slate-700/80 shadow-[inset_0_4px_20px_rgba(0,0,0,0.8)] flex flex-col items-center">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 transform rotate-45 translate-x-12 -translate-y-4"></div>
-
-                  {/* Wiper lines */}
-                  <div className="absolute bottom-2 left-1/4 w-20 h-1 bg-slate-600 rounded-full rotate-[10deg]"></div>
-                  <div className="absolute bottom-2 right-1/4 w-20 h-1 bg-slate-600 rounded-full rotate-[-10deg]"></div>
-
-                  {/* Destination Sign */}
-                  <div className="mt-2 w-40 h-6 bg-slate-900 border border-slate-700 rounded flex items-center justify-center overflow-hidden">
-                    <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }} className="text-secondary text-[10px] font-black tracking-widest uppercase">
-                      INTERCITY EXPRESS
-                    </motion.div>
-                  </div>
-                </div>
-
-                {/* Front Grill & Lights */}
-                <div className="w-full h-24 mt-2 px-6 flex flex-col items-center">
-                  <div className="flex w-full justify-between items-center px-2">
-                    {/* Headlights */}
-                    <div className="w-12 h-10 bg-white rounded-lg shadow-[0_0_30px_rgba(255,255,255,0.8)] border-2 border-slate-300 flex items-center justify-center">
-                      <div className="w-6 h-6 bg-yellow-100 rounded-full blur-[2px]"></div>
-                    </div>
-
-                    {/* Grill */}
-                    <div className="flex-1 h-12 mx-4 bg-slate-800 rounded-lg border-2 border-slate-700 flex flex-col justify-around py-1 px-2">
-                      <div className="w-full h-1 bg-slate-700 rounded-full"></div>
-                      <div className="w-full h-1 bg-slate-700 rounded-full"></div>
-                      <div className="w-full h-1 bg-slate-700 rounded-full"></div>
-                    </div>
-
-                    <div className="w-12 h-10 bg-white rounded-lg shadow-[0_0_30px_rgba(255,255,255,0.8)] border-2 border-slate-300 flex items-center justify-center">
-                      <div className="w-6 h-6 bg-yellow-100 rounded-full blur-[2px]"></div>
-                    </div>
-                  </div>
-
-                  {/* Logo / Badge */}
-                  <div className="mt-1 w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center border-2 border-primary/30">
-                    <span className="text-primary font-black text-xs">SR</span>
-                  </div>
-                </div>
-
-                {/* Turn Signals */}
-                <div className="absolute bottom-10 left-4 w-6 h-3 bg-orange-500 rounded-full shadow-[0_0_10px_rgba(249,115,22,0.6)] animate-pulse"></div>
-                <div className="absolute bottom-10 right-4 w-6 h-3 bg-orange-500 rounded-full shadow-[0_0_10px_rgba(249,115,22,0.6)] animate-pulse"></div>
+                {/* Base */}
+                <div className="absolute bottom-0 -left-4 w-10 h-3 bg-slate-700 rounded-full" />
               </div>
-
-              {/* Wheels */}
-              <div className="absolute -bottom-5 left-8 w-14 h-18 bg-slate-950 rounded-xl border-t-4 border-slate-700 shadow-xl z-0"></div>
-              <div className="absolute -bottom-5 right-8 w-14 h-18 bg-slate-950 rounded-xl border-t-4 border-slate-700 shadow-xl z-0"></div>
-
-              {/* Speed lines from front */}
-              <motion.div
-                animate={{ opacity: [0, 0.4, 0], x: [0, 100], y: [0, 20] }}
-                transition={{ repeat: Infinity, duration: 0.8 }}
-                className="absolute right-0 top-1/2 w-40 h-1 bg-gradient-to-l from-white/40 to-transparent blur-sm rounded-full -z-10"
-              />
             </motion.div>
 
-            {/* The Passengers running frantically */}
+            {/* The Passengers waiting at the bus stop */}
             <motion.div
-              animate={{ x: [0, 35, 0], y: [0, -12, 0] }}
-              transition={{ repeat: Infinity, duration: 1.1, ease: "easeInOut" }}
-              className="absolute left-[8%] bottom-[8%] z-30 flex items-end gap-12 scale-110"
+              animate={{ y: [0, -5, 0] }}
+              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+              className="absolute right-[5%] top-[22%] z-30 flex items-end gap-6 scale-[0.45]"
             >
-              {/* Passenger 1 (Woman) with Suitcase */}
+              {/* Passenger 1 (Woman) */}
               <div className="relative z-20">
-                {/* Shadow */}
                 <div className="absolute -bottom-2 -left-4 w-12 h-4 bg-black/30 rounded-full blur-sm transform scale-x-150"></div>
-
-                {/* Body */}
-                <div className="w-9 h-24 bg-pink-500 rounded-full transform rotate-[25deg] origin-bottom shadow-lg relative z-20">
-                  {/* Head */}
+                <div className="w-9 h-24 bg-pink-500 rounded-full shadow-lg relative z-20">
                   <div className="absolute -top-9 left-1 w-10 h-10 bg-orange-200 rounded-full flex items-center justify-center overflow-hidden border border-orange-300/50 z-30">
                     <div className="w-[120%] h-full bg-amber-800 rounded-full absolute -top-1 -right-2"></div>
                   </div>
                 </div>
-
-                {/* Rolling Suitcase */}
-                <motion.div
-                  animate={{ rotate: [-8, -20, -8], y: [0, -4, 0] }}
-                  transition={{ repeat: Infinity, duration: 0.6 }}
-                  className="absolute -left-16 bottom-0 origin-bottom-right z-10 flex flex-col items-center"
-                >
-                  <div className="absolute -top-7 right-2 w-8 h-7 border-[3px] border-slate-800 rounded-t-md"></div>
-                  <div className="w-14 h-20 bg-red-500 rounded-lg shadow-xl border-[3px] border-red-700 relative overflow-hidden">
-                    <div className="absolute top-2 w-full h-full border-t-[3px] border-red-400/50"></div>
-                  </div>
-                  <div className="absolute -bottom-2 left-1.5 w-5 h-5 bg-slate-800 rounded-full border border-slate-600"></div>
-                  <div className="absolute -bottom-2 right-1.5 w-5 h-5 bg-slate-800 rounded-full border border-slate-600"></div>
-                </motion.div>
-
-                {/* Arm holding suitcase */}
-                <motion.div
-                  animate={{ rotate: [30, 50, 30] }}
-                  transition={{ repeat: Infinity, duration: 0.6 }}
-                  className="absolute top-5 -left-4 w-14 h-3 bg-pink-400 rounded-full origin-right z-20"
-                />
-                {/* Arm reaching out */}
-                <motion.div
-                  animate={{ rotate: [-10, -30, -10] }}
-                  transition={{ repeat: Infinity, duration: 0.6 }}
-                  className="absolute top-5 right-0 w-14 h-3 bg-pink-400 rounded-full origin-left z-20"
-                />
-
-                {/* Panic Lines */}
-                <motion.div animate={{ opacity: [1, 0], scale: [1, 0.5] }} transition={{ repeat: Infinity, duration: 0.6 }} className="absolute -top-14 left-0 font-black text-rose-500 rotate-[-10deg] text-xl drop-shadow-sm">!?!</motion.div>
+                {/* Suitcase beside her */}
+                <div className="absolute -left-14 bottom-0 z-10">
+                  <div className="w-12 h-16 bg-red-500 rounded-lg shadow-xl border-2 border-red-700" />
+                </div>
               </div>
 
-              {/* Passenger 2 (Man) with Backpack */}
-              <motion.div
-                animate={{ y: [0, -14, 0] }}
-                transition={{ repeat: Infinity, duration: 0.35 }}
-                className="relative -ml-6 z-10"
-              >
-                {/* Shadow */}
+              {/* Passenger 2 (Man) */}
+              <div className="relative -ml-2 z-10">
                 <div className="absolute -bottom-4 left-0 w-12 h-3 bg-black/20 rounded-full blur-sm transform scale-x-150"></div>
-
-                {/* Body */}
-                <div className="w-11 h-28 bg-emerald-500 rounded-full transform rotate-[30deg] origin-bottom shadow-lg relative z-20">
-                  {/* Head */}
+                <div className="w-11 h-28 bg-emerald-500 rounded-full shadow-lg relative z-20">
                   <div className="absolute -top-10 left-2 w-11 h-11 bg-orange-200 rounded-full flex items-center justify-center overflow-hidden border border-orange-300/50 z-30">
                     <div className="w-[110%] h-[110%] bg-slate-800 rounded-full absolute -top-3"></div>
                   </div>
                 </div>
+                {/* Backpack on him */}
+                <div className="absolute top-2 -left-4 w-8 h-12 bg-amber-400 rounded-xl shadow-lg border-2 border-amber-600" />
+              </div>
+            </motion.div>
 
-                {/* Backpack */}
-                <div className="absolute top-2 -left-8 w-11 h-16 bg-amber-400 rounded-2xl shadow-xl border-4 border-amber-600 z-10 transform rotate-12"></div>
+            {/* The Bus - Follows the Zig-Zag with Scale Perspective */}
+            <motion.div
+              animate={{
+                x: [50, 50, -250, 350, 480],
+                y: [450, 200, 0, -200, -350],
+                scale: [1, 0.8, 0.6, 0.45, 0.35],
+                rotate: [0, 0, -10, 10, 5]
+              }}
+              transition={{
+                repeat: Infinity,
+                duration: 12,
+                ease: "linear",
+                times: [0, 0.2, 0.45, 0.75, 1]
+              }}
+              className="absolute z-20 origin-bottom"
+            >
+              {/* Bus Shadow */}
+              <div className="absolute -bottom-6 left-2 right-2 h-8 bg-black/30 blur-xl rounded-[100%]"></div>
 
-                {/* Arm pumping back */}
-                <motion.div
-                  animate={{ rotate: [80, 120, 80] }}
-                  transition={{ repeat: Infinity, duration: 0.35 }}
-                  className="absolute top-6 -left-2 w-12 h-3.5 bg-emerald-400 rounded-full origin-right z-30"
-                />
-                {/* Arm reaching out frantically */}
-                <motion.div
-                  animate={{ rotate: [-10, -35, -10] }}
-                  transition={{ repeat: Infinity, duration: 0.35 }}
-                  className="absolute top-5 right-4 w-16 h-3.5 bg-emerald-400 rounded-full origin-left z-30 flex items-center justify-end"
-                >
-                  <div className="w-5 h-4 bg-orange-200 rounded-full -mr-1 shadow-sm"></div>
-                </motion.div>
+              {/* Bus Body (Front) */}
+              <div className="w-64 h-56 bg-white dark:bg-slate-200 rounded-[35px] rounded-bl-3xl rounded-br-3xl shadow-2xl overflow-hidden relative border-b-[10px] border-slate-300 dark:border-slate-400 flex flex-col items-center z-10">
+                <div className="w-full h-1/2 bg-gradient-to-b from-primary/10 to-transparent absolute top-0"></div>
 
-                {/* Sweat drops */}
-                <motion.div animate={{ y: [0, 15], opacity: [1, 0], scale: [1, 0] }} transition={{ repeat: Infinity, duration: 0.5 }} className="absolute -top-8 -left-3 w-2 h-4 bg-blue-400 rounded-full blur-[0.5px]"></motion.div>
-                <motion.div animate={{ y: [0, 18], opacity: [1, 0], scale: [1, 0] }} transition={{ repeat: Infinity, duration: 0.5, delay: 0.2 }} className="absolute -top-4 -right-1 w-2 h-4 bg-blue-400 rounded-full blur-[0.5px]"></motion.div>
+                {/* Roof unit (AC) */}
+                <div className="absolute -top-1 w-40 h-4 bg-slate-100 border border-slate-300 rounded-b-lg shadow-inner z-0 opacity-80" />
 
-                <motion.div animate={{ y: [0, -8], opacity: [1, 0], scale: [1, 1.5], x: [0, 5] }} transition={{ repeat: Infinity, duration: 0.7 }} className="absolute -top-16 left-8 text-base font-black text-slate-800 dark:text-slate-200 rotate-[15deg] whitespace-nowrap drop-shadow-[0_2px_2px_rgba(255,255,255,0.8)]">HEY WAIT!</motion.div>
-              </motion.div>
+                {/* Windshield (Front) */}
+                <div className="w-56 h-28 bg-slate-900/95 rounded-t-[25px] rounded-b-lg mt-4 relative overflow-hidden border-[4px] border-slate-700/80 shadow-[inset_0_4px_15px_rgba(0,0,0,0.8)] flex flex-col items-center">
+                  <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 transform rotate-45 translate-x-12 -translate-y-4"></div>
+                  <div className="mt-2 w-32 h-5 bg-black border border-slate-800 rounded flex items-center justify-center">
+                    <div className="text-secondary text-[8px] font-black tracking-widest uppercase">INTERCITY</div>
+                  </div>
+                </div>
+
+                {/* Front Grill & Lights */}
+                <div className="w-full h-20 mt-2 px-6 flex flex-col items-center">
+                  <div className="flex w-full justify-between items-center px-2">
+                    <div className="w-10 h-8 bg-white rounded-lg shadow-[0_0_20px_rgba(255,255,255,0.6)] border-2 border-slate-200 flex items-center justify-center">
+                      <div className="w-4 h-4 bg-yellow-100 rounded-full blur-[2px] animate-pulse"></div>
+                    </div>
+                    <div className="flex-1 h-10 mx-3 bg-slate-800 rounded-lg border-2 border-slate-700 flex flex-col justify-around py-1 px-2">
+                      <div className="w-full h-1 bg-slate-600 rounded-full opacity-50"></div>
+                      <div className="w-full h-1 bg-slate-600 rounded-full opacity-50"></div>
+                    </div>
+                    <div className="w-10 h-8 bg-white rounded-lg shadow-[0_0_20px_rgba(255,255,255,0.6)] border-2 border-slate-200 flex items-center justify-center">
+                      <div className="w-4 h-4 bg-yellow-100 rounded-full blur-[2px] animate-pulse"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Wheels */}
+              <div className="absolute -bottom-4 left-6 w-12 h-16 bg-slate-950 rounded-xl border-t-2 border-slate-700 z-0"></div>
+              <div className="absolute -bottom-4 right-6 w-12 h-16 bg-slate-950 rounded-xl border-t-2 border-slate-700 z-0"></div>
             </motion.div>
           </div>
         </div>

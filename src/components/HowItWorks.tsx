@@ -68,27 +68,30 @@ const HowItWorks = () => {
         </motion.div>
 
         {/* Steps Container with Track */}
-        <div ref={containerRef} className="relative pl-[15%] md:pl-[20%] space-y-24 md:space-y-40">
+        <div ref={containerRef} className="relative pl-[25%] md:pl-[25%] space-y-24 md:space-y-40">
 
           {/* Scroll-Responsive Road Background - Relative to Steps */}
-          <div className="absolute top-0 bottom-0 left-0 w-full pointer-events-none overflow-hidden -ml-6 md:-ml-10">
+          <div className="absolute top-0 bottom-0 left-0 w-full pointer-events-none overflow-hidden -ml-8 md:-ml-12">
             <svg className="w-full h-full" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+              {/* Broad Road Base */}
               <path
                 d="M 150 0 L 150 1000"
-                className="stroke-slate-100 dark:stroke-slate-900/30 stroke-[80] md:stroke-[120] fill-none"
+                className="stroke-slate-200 dark:stroke-slate-800/50 stroke-[200] md:stroke-[250] fill-none"
               />
+              {/* Lane Markings */}
               <path
                 d="M 150 0 L 150 1000"
-                className="stroke-slate-800 dark:stroke-slate-900/40 stroke-[3] md:stroke-[4] stroke-dasharray-[20,30] fill-none"
+                className="stroke-slate-400 dark:stroke-slate-700/60 stroke-[4] md:stroke-[6] stroke-dasharray-[30,40] fill-none"
               />
+              {/* Journey Progress Highlight */}
               <motion.path
                 d="M 150 0 L 150 1000"
                 style={{ pathLength: smoothProgress }}
-                className="stroke-primary/40 stroke-[82] md:stroke-[122] fill-none blur-md"
+                className="stroke-primary/30 stroke-[205] md:stroke-[255] fill-none blur-sm"
               />
             </svg>
 
-            {/* The Scaled-Down Scrolling Bus - Now correctly using 'top' for travel */}
+            {/* The Extra Small Scrolling Bus */}
             <motion.div
               style={{
                 top: busTop,
@@ -96,30 +99,25 @@ const HowItWorks = () => {
               }}
               className="absolute z-30 -translate-x-1/2 -translate-y-1/2"
             >
-              <div className="relative w-12 md:w-16 h-20 md:h-28 drop-shadow-xl flex flex-col items-center">
-                <div className="w-full h-full bg-primary rounded-lg md:rounded-xl overflow-hidden shadow-2xl flex flex-col border-x-2 md:border-x-[3px] border-black/10">
+              <div className="relative w-10 md:w-12 h-16 md:h-22 drop-shadow-xl flex flex-col items-center">
+                <div className="w-full h-full bg-primary rounded-md md:rounded-lg overflow-hidden shadow-2xl flex flex-col border-x-[1.5px] md:border-x-2 border-black/10">
                   <div className="w-3/4 h-1 bg-white/20 rounded-b-lg mx-auto" />
 
-                  {/* Compact windshield */}
-                  <div className="mx-1 mt-1.5 h-6 md:h-8 bg-slate-900/95 rounded-t-md shadow-inner relative" />
+                  {/* Miniature windshield */}
+                  <div className="mx-0.5 mt-1 h-4 md:h-6 bg-slate-900/95 rounded-t-sm shadow-inner relative" />
 
                   {/* Windows */}
-                  <div className="mx-1 mt-1 flex flex-col gap-0.5 flex-1">
-                    <div className="h-3 md:h-4 bg-slate-900/80 rounded-sm" />
-                    <div className="h-3 md:h-4 bg-slate-900/80 rounded-sm" />
+                  <div className="mx-0.5 mt-1 flex flex-col gap-0.5 flex-1">
+                    <div className="h-2 md:h-3 bg-slate-900/80 rounded-sm" />
+                    <div className="h-2 md:h-3 bg-slate-900/80 rounded-sm" />
                   </div>
 
-                  {/* Tiny Lights */}
-                  <div className="mt-auto flex justify-between px-1.5 pb-1.5">
-                    <div className="w-2 h-1.5 bg-yellow-200 rounded-full shadow-[0_0_8px_rgba(253,224,71,0.8)]" />
-                    <div className="w-2 h-1.5 bg-yellow-200 rounded-full shadow-[0_0_8px_rgba(253,224,71,0.8)]" />
+                  {/* Micro Lights */}
+                  <div className="mt-auto flex justify-between px-1 pb-1">
+                    <div className="w-1.5 h-1.5 bg-yellow-200 rounded-full shadow-[0_0_5px_rgba(253,224,71,0.8)]" />
+                    <div className="w-1.5 h-1.5 bg-yellow-200 rounded-full shadow-[0_0_5px_rgba(253,224,71,0.8)]" />
                   </div>
                 </div>
-                {/* Micro Wheels */}
-                <div className="absolute top-1/5 -left-1 w-1.5 md:w-2 h-6 bg-slate-950 rounded-l-md" />
-                <div className="absolute top-1/5 -right-1 w-1.5 md:w-2 h-6 bg-slate-950 rounded-r-md" />
-                <div className="absolute top-3/4 -left-1 w-1.5 md:w-2 h-6 bg-slate-950 rounded-l-md" />
-                <div className="absolute top-3/4 -right-1 w-1.5 md:w-2 h-6 bg-slate-950 rounded-r-md" />
               </div>
             </motion.div>
           </div>
@@ -131,7 +129,7 @@ const HowItWorks = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="relative flex flex-col gap-4 md:gap-6 group"
+              className="relative flex flex-col gap-3 md:gap-4 group pr-4"
             >
               <div className="flex items-center gap-4 md:gap-6">
                 <div className="relative flex-shrink-0">

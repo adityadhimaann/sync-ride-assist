@@ -29,6 +29,7 @@ const mobileNavItems = [
 
 const Navbar = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
@@ -63,12 +64,9 @@ const Navbar = () => {
         <div className={`flex h-full px-4 md:px-8 ${isTrackingPage ? "flex-col py-6 items-center w-full" : "max-w-7xl mx-auto items-center justify-between w-full"
           }`}>
           <Link to="/" className={`flex items-center gap-2 ${isTrackingPage ? "mb-10" : ""}`}>
-            <img src="/assets/RideSync (1).svg" alt="SyncRide" className={`${isTrackingPage ? "h-10 w-10" : "h-10 md:h-12"} w-auto`} />
-            {!isTrackingPage && (
-              <span className="text-xl md:text-2xl font-black tracking-tight hidden xl:inline">
-                <span className="text-primary">Sync</span><span className="text-secondary">Ride</span>
-              </span>
-            )}
+            <span className="text-xl md:text-2xl font-black tracking-tight">
+              <span className="text-primary">Sync</span><span className="text-secondary">Ride</span>
+            </span>
           </Link>
 
           {/* Nav Items */}
@@ -143,8 +141,8 @@ const Navbar = () => {
               </div>
             )}
 
-            {/* User Profile Icon for Mobile (Top Right) */}
-            <div className="md:hidden">
+            {/* User Profile / Mobile Actions (Top Right) */}
+            <div className="md:hidden flex items-center gap-3">
               {user ? (
                 <Link to="/profile">
                   <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-primary/20 bg-card/80 backdrop-blur-md">
@@ -158,52 +156,74 @@ const Navbar = () => {
                   </div>
                 </Link>
               ) : (
-                <Link to="/login">
-                  <Button variant="hero" size="sm" className="h-9 px-4 rounded-xl text-xs shadow-lg">Login</Button>
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link to="/login">
+                    <Button variant="ghost" size="sm" className="h-9 px-3 rounded-xl text-xs font-bold">Login</Button>
+                  </Link>
+                  <Link to="/signup">
+                    <Button variant="hero" size="sm" className="h-9 px-4 rounded-xl text-xs shadow-lg">Sign Up</Button>
+                  </Link>
+                </div>
               )}
+
+              {/* Two bars toggle */}
+              <button
+                className="p-1 pl-2 text-foreground focus:outline-none"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                <div className="flex flex-col gap-1.5 w-6 items-end">
+                  <span className={`block h-[2px] w-full bg-current transition-all duration-300 rounded-full ${isMobileMenuOpen ? 'rotate-45 translate-y-[8px]' : ''}`} />
+                  <span className={`block h-[2px] bg-current transition-all duration-300 rounded-full ${isMobileMenuOpen ? 'w-full -rotate-45' : 'w-1/2'}`} />
+                </div>
+              </button>
             </div>
           </div>
         </div>
       </motion.nav>
 
-      {/* Mobile/Tablet Bottom Navigation Bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 pointer-events-none">
-        <div className="max-w-md mx-auto pointer-events-auto">
-          <div className="bg-card/90 backdrop-blur-2xl border border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.2)] rounded-[2rem] p-2 flex items-center justify-around">
-            {mobileNavItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.href;
-              return (
-                <Link
-                  key={item.label}
-                  to={item.href}
-                  className="relative flex flex-col items-center justify-center py-2 px-1 w-full group"
-                >
-                  <motion.div
-                    whileTap={{ scale: 0.9 }}
-                    className={`p-1.5 rounded-xl transition-all duration-300 ${isActive
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30"
-                      : "text-muted-foreground group-hover:bg-accent/50"
-                      }`}
+      {/* Mobile/Tablet Dropdown Navigation Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="md:hidden fixed top-16 left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-border/40 z-40 shadow-xl max-h-[calc(100vh-4rem)] overflow-y-auto"
+          >
+            <div className="flex flex-col p-4 gap-2">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.href;
+                return (
+                  <Link
+                    key={item.label}
+                    to={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 p-3 rounded-xl transition-all ${isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-accent"}`}
                   >
-                    <Icon className={`h-5 w-5 ${isActive ? "stroke-[2.5px]" : "stroke-[2px]"}`} />
-                  </motion.div>
-                  <span className={`text-[10px] mt-1 font-bold ${isActive ? "text-primary" : "text-muted-foreground"}`}>
-                    {item.label}
-                  </span>
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeDot"
-                      className="absolute -bottom-1 w-1 h-1 rounded-full bg-primary"
-                    />
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </div>
+                    <Icon className="h-5 w-5" />
+                    <span className="font-semibold text-sm">{item.label}</span>
+                  </Link>
+                );
+              })}
+
+
+              {user && (
+                <>
+                  <div className="h-px bg-border/50 my-2" />
+                  <button
+                    onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}
+                    className="flex items-center gap-3 p-3 rounded-xl transition-all text-destructive hover:bg-destructive/10 w-full text-left"
+                  >
+                    <LogOut className="h-5 w-5" />
+                    <span className="font-semibold text-sm">Logout</span>
+                  </button>
+                </>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

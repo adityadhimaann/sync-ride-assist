@@ -4,17 +4,16 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="relative overflow-hidden bg-gradient-to-b from-background via-primary/[0.03] to-primary/[0.07] border-t border-border/60">
+    <footer className="relative overflow-hidden bg-transparent border-t border-border/60">
       {/* Decorative blurred blobs */}
       <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-20 right-10 w-48 h-48 bg-secondary/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 pt-10 pb-6 md:pt-12 md:pb-8 relative z-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4 group">
-              <img src="/assets/RideSync (1).svg" alt="SyncRide" className="h-9 w-auto transition-transform group-hover:scale-105" />
               <span className="text-xl font-bold">
                 <span className="text-primary">Sync</span><span className="text-secondary">Ride</span>
               </span>
@@ -39,49 +38,10 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Product */}
-          <div>
-            <h4 className="font-bold mb-3 md:mb-4 text-sm md:text-base text-foreground">Product</h4>
-            <ul className="space-y-2 md:space-y-2.5 text-xs md:text-sm">
-              {[
-                { label: "Journey Planner", href: "/" },
-                { label: "Live Tracking", href: "/tracking" },
-                { label: "Pricing", href: "/#pricing" },
-                { label: "For Conductors", href: "/conductor" },
-              ].map((item) => (
-                <li key={item.label}>
-                  <Link
-                    to={item.href}
-                    className="text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1 group"
-                  >
-                    {item.label}
-                    <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
 
-          {/* Company */}
-          <div>
-            <h4 className="font-bold mb-3 md:mb-4 text-sm md:text-base text-foreground">Company</h4>
-            <ul className="space-y-2 md:space-y-2.5 text-xs md:text-sm">
-              {["About Us", "Careers", "Blog", "Press"].map((item) => (
-                <li key={item}>
-                  <a
-                    href="#"
-                    className="text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1 group"
-                  >
-                    {item}
-                    <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all" />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
 
           {/* Contact */}
-          <div className="col-span-2 md:col-span-1">
+          <div>
             <h4 className="font-bold mb-3 md:mb-4 text-sm md:text-base text-foreground">Contact</h4>
             <ul className="space-y-3 md:space-y-3.5 text-xs md:text-sm">
               {[

@@ -4,12 +4,7 @@ import { MapPin, Navigation, Calendar, Clock, ArrowRight, RefreshCw } from "luci
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import heroTravel1 from "@/assets/hero-travel-1.jpg";
-import heroTravel2 from "@/assets/hero-travel-2.jpg";
-import heroTravel3 from "@/assets/hero-travel-3.jpg";
 
-
-const heroImages = [heroTravel1, heroTravel2, heroTravel3];
 
 // Helper to fetch suggestions from Nominatim
 const fetchSuggestions = async (query: string) => {
@@ -66,15 +61,7 @@ const HeroSection = () => {
   const [locating, setLocating] = useState(false);
   const [activeField, setActiveField] = useState<"start" | "bus" | "dest" | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [currentImage, setCurrentImage] = useState(0);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImage((prev) => (prev + 1) % heroImages.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
 
   // Handle auto-locate
   const handleLocateMe = async () => {
@@ -129,28 +116,14 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-8 md:pt-32 md:pb-0 overflow-x-hidden">
-      {/* Full-width cycling background images */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentImage}
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.7 }}
-          className="absolute inset-0"
-        >
-          <img src={heroImages[currentImage]} alt="Travel background" className="w-full h-full object-cover" />
-        </motion.div>
-      </AnimatePresence>
-      <div className="absolute inset-0 bg-foreground/60" />
+    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-8 md:pt-32 md:pb-0 overflow-x-hidden bg-transparent">
 
 
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-primary-foreground/10 backdrop-blur-md text-primary-foreground/90 text-xs md:text-sm font-medium mb-4 md:mb-6">
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-primary/10 backdrop-blur-md text-primary/90 text-xs md:text-sm font-medium mb-4 md:mb-6">
               Trusted by 50,000+ travelers across India
             </span>
           </motion.div>
@@ -159,7 +132,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-3xl md:text-6xl lg:text-7xl font-bold text-primary-foreground mb-4 md:mb-6 leading-tight"
+            className="text-3xl md:text-6xl lg:text-7xl font-bold text-foreground mb-4 md:mb-6 leading-tight"
           >
             Never Miss Your
             <br />
@@ -173,7 +146,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-base md:text-xl text-primary-foreground/70 mb-6 md:mb-10 max-w-xl mx-auto px-2"
+            className="text-base md:text-xl text-muted-foreground mb-6 md:mb-10 max-w-xl mx-auto px-2"
           >
             Smart last-mile coordination with guaranteed arrival protection.
             From your doorstep to your destination, stress-free.
@@ -286,18 +259,18 @@ const HeroSection = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
-            className="mt-6 md:mt-8 flex items-center justify-center gap-4 md:gap-6 text-primary-foreground/50 text-xs md:text-sm"
+            className="mt-6 md:mt-8 flex items-center justify-center gap-4 md:gap-6 text-muted-foreground text-xs md:text-sm"
           >
             <span className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-success" />
+              
               100+ cities
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-success" />
+              
               500+ bus operators
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-success" />
+              
               4.8★ rating
             </span>
           </motion.div>

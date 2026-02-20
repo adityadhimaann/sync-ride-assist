@@ -119,7 +119,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-[85vh] flex items-center justify-center pt-8 pb-8 md:pt-10 md:pb-0 overflow-x-hidden bg-background">
+    <section className="relative min-h-[85vh] flex items-center justify-center pt-24 pb-8 md:pt-28 md:pb-0 overflow-x-hidden bg-background">
       {/* Dynamic Map Background */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-transparent to-background/80 z-10" />
@@ -170,14 +170,9 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-3xl md:text-5xl lg:text-6xl font-black text-foreground mb-6 leading-tight tracking-tight"
+              className="text-3xl md:text-5xl lg:text-5xl font-black text-foreground mb-6 leading-tight tracking-tight max-w-[1000px] mx-auto"
             >
-              Never Miss Your
-              <br />
-              <span className="text-secondary drop-shadow-sm">
-                Intercity Bus
-              </span>{" "}
-              Again
+              Never Miss Your <span className="text-secondary drop-shadow-sm">Intercity Bus</span> Again
             </motion.h1>
 
             <motion.p

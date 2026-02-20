@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Navigation, Calendar, Clock, ArrowRight, RefreshCw } from "lucide-react";
+import { MapPin, Navigation, Calendar, Clock, ArrowRight, RefreshCw, Bus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -348,11 +348,10 @@ const HeroSection = () => {
                 <motion.path
                   d="M 500 1100 L 500 850 L 200 650 L 800 450 L 950 250"
                   stroke="currentColor"
-                  className="text-primary/10"
                   strokeWidth="120"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="blur-3xl"
+                  className="text-primary/10 blur-3xl"
                 />
               </svg>
             </div>
@@ -381,7 +380,7 @@ const HeroSection = () => {
             <motion.div
               animate={{ y: [0, -5, 0] }}
               transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-              className="absolute right-[5%] top-[22%] z-30 flex items-end gap-6 scale-[0.45]"
+              className="absolute right-[8%] top-[22%] z-30 flex items-end gap-4 scale-[0.3]"
             >
               {/* Passenger 1 (Woman) */}
               <div className="relative z-20">
@@ -415,7 +414,7 @@ const HeroSection = () => {
               animate={{
                 x: [50, 50, -250, 350, 480],
                 y: [450, 200, 0, -200, -350],
-                scale: [1, 0.8, 0.6, 0.45, 0.35],
+                scale: [0.6, 0.5, 0.4, 0.3, 0.2],
                 rotate: [0, 0, -10, 10, 5]
               }}
               transition={{

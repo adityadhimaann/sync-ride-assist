@@ -166,25 +166,18 @@ const HeroSection = () => {
               </span>
             </motion.div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-3xl md:text-5xl lg:text-5xl font-black text-foreground mb-6 leading-tight tracking-tight max-w-[1000px] mx-auto"
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="w-full max-w-4xl mx-auto mb-8"
             >
-              Never Miss Your <span className="text-secondary drop-shadow-sm">Intercity Bus</span> Again
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-base md:text-xl text-muted-foreground mb-10 max-w-2xl px-2 opacity-90"
-            >
-              Smart last-mile coordination with guaranteed arrival protection.
-              <br className="hidden md:block" />
-              From your doorstep to your destination, stress-free.
-            </motion.p>
+              <img
+                src="/assets/SyncRidebanner.png"
+                alt="SyncRide - Never Miss Your Intercity Bus Again"
+                className="w-full h-auto object-contain drop-shadow-2xl"
+              />
+            </motion.div>
 
             {/* Journey Planner Card */}
             <motion.div

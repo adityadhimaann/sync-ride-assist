@@ -65,12 +65,27 @@ const Footer = () => {
           <p className="text-xs md:text-sm text-muted-foreground flex items-center gap-1">
             © 2026 SyncRide. Made in India.
           </p>
-          <div className="flex gap-4 md:gap-6 text-xs md:text-sm">
-            {["Privacy", "Terms", "Refund Policy"].map((item) => (
-              <a key={item} href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                {item}
-              </a>
-            ))}
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+            {/* Stats Badge for Footer */}
+            <div className="hidden md:flex items-center gap-4 text-[10px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <span className="flex items-center gap-1.5 bg-background px-2 py-1 rounded-md border border-border/40 shadow-sm">
+                100+ cities
+              </span>
+              <span className="flex items-center gap-1.5 bg-background px-2 py-1 rounded-md border border-border/40 shadow-sm">
+                500+ operators
+              </span>
+              <span className="flex items-center gap-1.5 bg-background px-2 py-1 rounded-md border border-border/40 shadow-sm">
+                4.8★ rating
+              </span>
+            </div>
+
+            <div className="flex gap-4 md:gap-6 text-xs md:text-sm">
+              {["Privacy", "Terms", "Refund Policy"].map((item) => (
+                <a key={item} href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                  {item}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </div>

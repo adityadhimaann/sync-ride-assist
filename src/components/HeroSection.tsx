@@ -119,7 +119,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-8 md:pt-32 md:pb-0 overflow-x-hidden bg-background">
+    <section className="relative min-h-[85vh] flex items-center justify-center pt-8 pb-8 md:pt-10 md:pb-0 overflow-x-hidden bg-background">
       {/* Dynamic Map Background */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-transparent to-background/80 z-10" />
@@ -156,7 +156,7 @@ const HeroSection = () => {
 
 
 
-      <div className="container mx-auto px-4 relative z-10 py-12">
+      <div className="container mx-auto px-4 relative z-10 pt-4 pb-12">
         <div className="flex flex-col items-center justify-center max-w-4xl mx-auto">
           {/* Main Content: Text & Planner */}
           <div className="flex flex-col items-center text-center w-full mb-12">
@@ -304,26 +304,9 @@ const HeroSection = () => {
               </div>
             </motion.div>
           </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.5 }}
-            className="flex flex-wrap items-center justify-center gap-4 md:gap-8 text-muted-foreground text-xs md:text-sm"
-          >
-            <span className="flex items-center gap-2 bg-slate-500/5 dark:bg-slate-400/5 px-6 py-2.5 rounded-full border border-border/40 backdrop-blur-md shadow-sm">
-              100+ cities
-            </span>
-            <span className="flex items-center gap-2 bg-slate-500/5 dark:bg-slate-400/5 px-6 py-2.5 rounded-full border border-border/40 backdrop-blur-md shadow-sm">
-              500+ bus operators
-            </span>
-            <span className="flex items-center gap-2 bg-slate-500/5 dark:bg-slate-400/5 px-6 py-2.5 rounded-full border border-border/40 backdrop-blur-md shadow-sm">
-              4.8★ rating
-            </span>
-          </motion.div>
         </div>
       </div>
-    </section >
+    </section>
   );
 };
 

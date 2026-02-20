@@ -4,6 +4,9 @@ import { MapPin, Navigation, Calendar, Clock, ArrowRight, RefreshCw } from "luci
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { MapContainer, TileLayer, Polyline } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 
 
 // Helper to fetch suggestions from Nominatim
@@ -116,7 +119,40 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-8 md:pt-32 md:pb-0 overflow-x-hidden bg-transparent">
+    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-8 md:pt-32 md:pb-0 overflow-x-hidden bg-background">
+      {/* Dynamic Map Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-transparent to-background/80 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/20 via-transparent to-background/20 z-10" />
+
+        <div className="absolute inset-0 opacity-80 dark:opacity-50">
+          <MapContainer
+            center={[20.5937, 78.9629]} // India center
+            zoom={4.5}
+            className="h-full w-full grayscale contrast-[0.9] brightness-[1] dark:brightness-[0.4]"
+            zoomControl={false}
+            dragging={false}
+            doubleClickZoom={false}
+            scrollWheelZoom={false}
+            attributionControl={false}
+          >
+            <TileLayer
+              url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+            />
+            {/* Simulated Active Routes */}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1, duration: 2 }}>
+              <Polyline
+                positions={[[28.6139, 77.2090], [19.0760, 72.8777]]}
+                pathOptions={{ color: '#3b82f6', weight: 2, opacity: 0.3, dashArray: '10, 10' }}
+              />
+              <Polyline
+                positions={[[12.9716, 77.5946], [13.0827, 80.2707]]}
+                pathOptions={{ color: '#22c55e', weight: 2, opacity: 0.3, dashArray: '10, 10' }}
+              />
+            </motion.div>
+          </MapContainer>
+        </div>
+      </div>
 
 
 
@@ -132,7 +168,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-3xl md:text-6xl lg:text-7xl font-bold text-foreground mb-4 md:mb-6 leading-tight"
+            className="text-2xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 md:mb-6 leading-tight"
           >
             Never Miss Your
             <br />
@@ -262,15 +298,15 @@ const HeroSection = () => {
             className="mt-6 md:mt-8 flex items-center justify-center gap-4 md:gap-6 text-muted-foreground text-xs md:text-sm"
           >
             <span className="flex items-center gap-1.5">
-              
+
               100+ cities
             </span>
             <span className="flex items-center gap-1.5">
-              
+
               500+ bus operators
             </span>
             <span className="flex items-center gap-1.5">
-              
+
               4.8★ rating
             </span>
           </motion.div>

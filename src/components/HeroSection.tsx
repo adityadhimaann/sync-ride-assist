@@ -323,18 +323,41 @@ const HeroSection = () => {
           </div>
 
           {/* Right Column: Coded Animated Illustration */}
-          <div className="hidden lg:flex relative w-full aspect-square flex-col items-center justify-center p-8 mx-auto xl:-mr-20 z-20 overflow-visible scale-90 xl:scale-[1.15] -mt-16 xl:-mt-32">
+          <div className="hidden lg:flex relative w-full aspect-square flex-col items-center justify-center p-8 mx-auto xl:-mr-20 z-20 overflow-visible scale-75 xl:scale-95 -mt-12 xl:-mt-24">
             {/* Context: Road */}
-            <div className="absolute bottom-[10%] w-[130%] h-40 bg-slate-800/80 dark:bg-slate-900/80 rounded-[100%] blur-[3px] transform -rotate-[4deg] scale-y-[0.35]"></div>
-            <div className="absolute bottom-[10%] w-[130%] h-40 border-t-[8px] border-dashed border-white/60 rounded-[100%] transform -rotate-[4deg] scale-y-[0.35]"></div>
+            <div className="absolute bottom-[15%] w-[130%] h-40 bg-slate-800/80 dark:bg-slate-900/80 rounded-[100%] blur-[3px] transform -rotate-[4deg] scale-y-[0.35]"></div>
+            <div className="absolute bottom-[15%] w-[130%] h-40 border-t-[8px] border-dashed border-white/60 rounded-[100%] transform -rotate-[4deg] scale-y-[0.35]"></div>
 
             <div className="absolute inset-0 bg-primary/25 blur-[120px] rounded-full hidden lg:block -z-10 transform -translate-y-12" />
+
+            {/* Speed Lines */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              {[...Array(5)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ x: 600, opacity: 0 }}
+                  animate={{ x: -600, opacity: [0, 0.5, 0] }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 1 + Math.random(),
+                    delay: i * 0.4,
+                    ease: "linear"
+                  }}
+                  className="absolute h-[2px] bg-sky-400/30 rounded-full"
+                  style={{
+                    top: `${30 + i * 12}%`,
+                    width: `${50 + Math.random() * 100}px`,
+                    transform: 'rotate(-5deg)'
+                  }}
+                />
+              ))}
+            </div>
 
             {/* The Bus - driving away */}
             <motion.div
               animate={{ x: [0, 45, -5, 0], y: [0, -6, 2, 0] }}
               transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut" }}
-              className="absolute right-[2%] bottom-[18%] z-20"
+              className="absolute right-[5%] bottom-[22%] z-20"
             >
               {/* Bus Shadow */}
               <div className="absolute -bottom-6 left-2 right-2 h-8 bg-black/50 blur-lg rounded-[100%]"></div>
@@ -418,7 +441,7 @@ const HeroSection = () => {
             <motion.div
               animate={{ x: [0, 35, 0], y: [0, -12, 0] }}
               transition={{ repeat: Infinity, duration: 1.1, ease: "easeInOut" }}
-              className="absolute left-[4%] bottom-[5%] z-30 flex items-end gap-12 scale-110"
+              className="absolute left-[8%] bottom-[8%] z-30 flex items-end gap-12 scale-110"
             >
               {/* Passenger 1 (Woman) with Suitcase */}
               <div className="relative z-20">

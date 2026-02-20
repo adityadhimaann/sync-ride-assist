@@ -322,21 +322,159 @@ const HeroSection = () => {
             </motion.div>
           </div>
 
-          {/* Right Column: Illustration */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="hidden lg:flex justify-center items-center w-full relative"
-          >
-            {/* Glowing backdrop effect behind image */}
-            <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full hidden lg:block" />
-            <img
-              src="/assets/RideSync copy.png"
-              alt="Travelers missing bus"
-              className="w-full max-w-[550px] xl:max-w-[650px] h-auto object-contain relative z-10 drop-shadow-2xl"
-            />
-          </motion.div>
+          {/* Right Column: Coded Animated Illustration */}
+          <div className="hidden lg:flex relative w-full aspect-square flex-col items-center justify-center p-8 mx-auto xl:-mr-12 z-20 overflow-visible scale-90 xl:scale-100">
+            {/* Context: Road */}
+            <div className="absolute bottom-[20%] w-[120%] h-32 bg-slate-800/80 dark:bg-slate-900/80 rounded-[100%] blur-[2px] transform -rotate-3 scale-y-[0.3]"></div>
+            <div className="absolute bottom-[20%] w-[120%] h-32 border-t-[6px] border-dashed border-white/50 rounded-[100%] transform -rotate-3 scale-y-[0.3]"></div>
+            <div className="absolute inset-0 bg-primary/20 blur-[120px] rounded-full hidden lg:block -z-10" />
+
+            {/* The Bus - driving away */}
+            <motion.div
+              animate={{ x: [0, 50, 0], y: [0, -5, 0] }}
+              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+              className="absolute right-[5%] bottom-[25%] z-20"
+            >
+              {/* Bus Shadow */}
+              <div className="absolute -bottom-6 left-4 right-4 h-6 bg-black/40 blur-md rounded-[100%]"></div>
+
+              {/* Bus Body */}
+              <div className="w-64 h-56 bg-white dark:bg-slate-100 rounded-[32px] rounded-tr-xl rounded-tl-xl shadow-2xl overflow-hidden relative border-b-8 border-slate-300 dark:border-slate-400 flex flex-col items-center z-10">
+                <div className="w-full h-1/2 bg-gradient-to-b from-[#1a44a1]/10 to-transparent absolute top-0"></div>
+
+                {/* Bus Back Window */}
+                <div className="w-56 h-28 bg-slate-800 rounded-2xl mt-4 relative overflow-hidden border-4 border-slate-700/50 shadow-inner flex items-center justify-center">
+                  <div className="absolute inset-0 bg-white/5 transform rotate-45 translate-x-16 -translate-y-8"></div>
+                  <motion.div animate={{ opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 3 }} className="text-white/60 font-black text-xl tracking-[0.3em] font-sans drop-shadow-md">
+                    SYNCRIDE
+                  </motion.div>
+                </div>
+
+                {/* Stripes */}
+                <div className="w-full h-10 mt-3 flex flex-col gap-1">
+                  <div className="w-full h-4 bg-primary/90"></div>
+                  <div className="w-full h-2 bg-secondary/90"></div>
+                </div>
+
+                {/* Taillights */}
+                <div className="absolute bottom-6 left-6 w-6 h-6 bg-red-500 rounded-full shadow-[0_0_20px_rgba(239,68,68,1)] border-2 border-red-700 animate-pulse"></div>
+                <div className="absolute bottom-6 right-6 w-6 h-6 bg-red-500 rounded-full shadow-[0_0_20px_rgba(239,68,68,1)] border-2 border-red-700 animate-pulse"></div>
+
+                {/* License plate */}
+                <div className="absolute bottom-4 w-20 h-6 bg-yellow-400 rounded flex items-center justify-center shadow-sm border border-yellow-500">
+                  <span className="text-[10px] font-black text-slate-900 tracking-wider">S2 M1SS</span>
+                </div>
+              </div>
+
+              {/* Wheels */}
+              <div className="absolute -bottom-4 left-10 w-10 h-14 bg-slate-900 rounded-xl border-t-2 border-slate-700 shadow-xl z-0"></div>
+              <div className="absolute -bottom-4 right-10 w-10 h-14 bg-slate-900 rounded-xl border-t-2 border-slate-700 shadow-xl z-0"></div>
+
+              {/* Exhaust smoke */}
+              <motion.div
+                animate={{ opacity: [0, 0.7, 0], scale: [0.5, 2, 3], x: [0, -40, -80], y: [0, -10, -20] }}
+                transition={{ repeat: Infinity, duration: 2, ease: "easeOut" }}
+                className="absolute left-4 bottom-2 w-16 h-16 bg-slate-300 dark:bg-slate-600 rounded-full blur-[20px] -z-10"
+              />
+              <motion.div
+                animate={{ opacity: [0, 0.5, 0], scale: [0.5, 2.5, 4], x: [0, -30, -60], y: [0, -5, -15] }}
+                transition={{ repeat: Infinity, duration: 2, delay: 0.4, ease: "easeOut" }}
+                className="absolute left-8 bottom-0 w-12 h-12 bg-slate-400 dark:bg-slate-500 rounded-full blur-[15px] -z-10"
+              />
+            </motion.div>
+
+            {/* The Passengers running frantically */}
+            <motion.div
+              animate={{ x: [0, 25, 0], y: [0, -8, 0] }}
+              transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
+              className="absolute left-[8%] bottom-[12%] z-30 flex items-end gap-10"
+            >
+              {/* Passenger 1 (Woman) with Suitcase */}
+              <div className="relative z-20">
+                {/* Shadow */}
+                <div className="absolute -bottom-2 -left-4 w-12 h-4 bg-black/30 rounded-full blur-sm transform scale-x-150"></div>
+
+                {/* Body */}
+                <div className="w-8 h-20 bg-pink-500 rounded-full transform rotate-[25deg] origin-bottom shadow-lg relative z-20">
+                  {/* Head */}
+                  <div className="absolute -top-8 left-1 w-9 h-9 bg-orange-200 rounded-full flex items-center justify-center overflow-hidden border border-orange-300/50">
+                    <div className="w-[120%] h-full bg-amber-800 rounded-full absolute -top-1 -right-2"></div>
+                  </div>
+                </div>
+
+                {/* Rolling Suitcase */}
+                <motion.div
+                  animate={{ rotate: [-8, -20, -8], y: [0, -4, 0] }}
+                  transition={{ repeat: Infinity, duration: 0.6 }}
+                  className="absolute -left-16 bottom-0 origin-bottom-right z-10 flex flex-col items-center"
+                >
+                  <div className="absolute -top-6 right-2 w-8 h-6 border-[3px] border-slate-800 rounded-t-md"></div>
+                  <div className="w-12 h-16 bg-red-500 rounded-lg shadow-xl border-[3px] border-red-700 relative overflow-hidden">
+                    <div className="absolute top-2 w-full h-full border-t border-red-400/50"></div>
+                  </div>
+                  <div className="absolute -bottom-2 left-1 w-4 h-4 bg-slate-800 rounded-full border border-slate-600"></div>
+                  <div className="absolute -bottom-2 right-1 w-4 h-4 bg-slate-800 rounded-full border border-slate-600"></div>
+                </motion.div>
+
+                {/* Arm holding suitcase */}
+                <motion.div
+                  animate={{ rotate: [30, 50, 30] }}
+                  transition={{ repeat: Infinity, duration: 0.6 }}
+                  className="absolute top-5 -left-4 w-12 h-2.5 bg-pink-400 rounded-full origin-right z-20"
+                />
+                {/* Arm reaching out */}
+                <motion.div
+                  animate={{ rotate: [-10, -30, -10] }}
+                  transition={{ repeat: Infinity, duration: 0.6 }}
+                  className="absolute top-5 right-0 w-12 h-2.5 bg-pink-400 rounded-full origin-left z-20"
+                />
+
+                {/* Panic Lines */}
+                <motion.div animate={{ opacity: [1, 0], scale: [1, 0.5] }} transition={{ repeat: Infinity, duration: 0.6 }} className="absolute -top-12 left-0 font-black text-rose-500 rotate-[-10deg] text-lg">!?!</motion.div>
+              </div>
+
+              {/* Passenger 2 (Man) with Backpack */}
+              <motion.div
+                animate={{ y: [0, -12, 0] }}
+                transition={{ repeat: Infinity, duration: 0.35 }}
+                className="relative -ml-6 z-10"
+              >
+                {/* Shadow */}
+                <div className="absolute -bottom-4 left-0 w-10 h-3 bg-black/20 rounded-full blur-sm transform scale-x-150"></div>
+
+                {/* Body */}
+                <div className="w-10 h-24 bg-emerald-500 rounded-full transform rotate-[30deg] origin-bottom shadow-lg relative z-20">
+                  {/* Head */}
+                  <div className="absolute -top-9 left-2 w-10 h-10 bg-orange-200 rounded-full flex items-center justify-center overflow-hidden border border-orange-300/50">
+                    <div className="w-[110%] h-[110%] bg-slate-800 rounded-full absolute -top-3"></div>
+                  </div>
+                </div>
+
+                {/* Backpack */}
+                <div className="absolute top-2 -left-6 w-9 h-14 bg-amber-400 rounded-2xl shadow-xl border-2 border-amber-600 z-10 transform rotate-12"></div>
+
+                {/* Arm pumping back */}
+                <motion.div
+                  animate={{ rotate: [80, 120, 80] }}
+                  transition={{ repeat: Infinity, duration: 0.35 }}
+                  className="absolute top-6 -left-2 w-10 h-3 bg-emerald-400 rounded-full origin-right z-30"
+                />
+                {/* Arm reaching out frantically */}
+                <motion.div
+                  animate={{ rotate: [-10, -35, -10] }}
+                  transition={{ repeat: Infinity, duration: 0.35 }}
+                  className="absolute top-5 right-4 w-14 h-3 bg-emerald-400 rounded-full origin-left z-30 flex items-center justify-end"
+                >
+                  <div className="w-4 h-4 bg-orange-200 rounded-full -mr-1 shadow-sm"></div>
+                </motion.div>
+
+                {/* Sweat drops */}
+                <motion.div animate={{ y: [0, 12], opacity: [1, 0], scale: [1, 0] }} transition={{ repeat: Infinity, duration: 0.5 }} className="absolute -top-8 -left-3 w-2 h-4 bg-blue-400 rounded-full"></motion.div>
+                <motion.div animate={{ y: [0, 15], opacity: [1, 0], scale: [1, 0] }} transition={{ repeat: Infinity, duration: 0.5, delay: 0.2 }} className="absolute -top-4 -right-1 w-2 h-4 bg-blue-400 rounded-full"></motion.div>
+                <motion.div animate={{ y: [0, -8], opacity: [1, 0], scale: [1, 1.5], x: [0, 5] }} transition={{ repeat: Infinity, duration: 0.7 }} className="absolute -top-14 left-8 text-sm font-black text-slate-300 rotate-[15deg] whitespace-nowrap">HEY WAIT!</motion.div>
+              </motion.div>
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>

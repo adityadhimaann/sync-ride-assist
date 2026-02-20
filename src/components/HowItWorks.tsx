@@ -47,7 +47,8 @@ const HowItWorks = () => {
   });
 
   // Bus movement transforms - scrolling DOWN the track
-  const busY = useTransform(smoothProgress, [0, 1], ["0%", "100%"]);
+  // Changed to use percentage of the total track height
+  const busTop = useTransform(smoothProgress, [0, 1], ["0%", "100%"]);
 
   return (
     <section className="py-24 md:py-40 bg-transparent relative overflow-visible">
@@ -87,13 +88,13 @@ const HowItWorks = () => {
               />
             </svg>
 
-            {/* The Scaled-Down Scrolling Bus */}
+            {/* The Scaled-Down Scrolling Bus - Now correctly using 'top' for travel */}
             <motion.div
               style={{
-                y: busY,
+                top: busTop,
                 left: "15%",
               }}
-              className="absolute top-0 z-30 -translate-x-1/2"
+              className="absolute z-30 -translate-x-1/2 -translate-y-1/2"
             >
               <div className="relative w-12 md:w-16 h-20 md:h-28 drop-shadow-xl flex flex-col items-center">
                 <div className="w-full h-full bg-primary rounded-lg md:rounded-xl overflow-hidden shadow-2xl flex flex-col border-x-2 md:border-x-[3px] border-black/10">

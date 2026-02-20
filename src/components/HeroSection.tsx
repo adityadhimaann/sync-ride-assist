@@ -166,22 +166,7 @@ const HeroSection = () => {
               </span>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05, duration: 0.5 }}
-              className="flex flex-wrap items-center justify-center lg:justify-start gap-3 md:gap-4 text-muted-foreground text-[10px] md:text-xs font-semibold mb-3 md:mb-4 uppercase tracking-wider"
-            >
-              <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50">
-                100+ cities
-              </span>
-              <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50">
-                500+ bus operators
-              </span>
-              <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50">
-                4.8★ rating
-              </span>
-            </motion.div>
+
 
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
@@ -436,6 +421,30 @@ const HeroSection = () => {
             </motion.div>
           </div>
         </div>
+
+        {/* Big Achievement Stats at the Bottom */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          viewport={{ once: true }}
+          className="mt-16 md:mt-24 border-t border-border/50 pt-10 md:pt-12"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-12 text-center">
+            <div className="flex flex-col items-center">
+              <span className="text-3xl md:text-5xl font-black text-foreground mb-2 drop-shadow-sm">100+</span>
+              <span className="text-sm md:text-base text-muted-foreground font-medium uppercase tracking-[0.2em]">Cities</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-3xl md:text-5xl font-black text-secondary mb-2 drop-shadow-sm">500+</span>
+              <span className="text-sm md:text-base text-muted-foreground font-medium uppercase tracking-[0.2em]">Operators</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-3xl md:text-5xl font-black text-success mb-2 drop-shadow-sm">4.8★</span>
+              <span className="text-sm md:text-base text-muted-foreground font-medium uppercase tracking-[0.2em]">Rating</span>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

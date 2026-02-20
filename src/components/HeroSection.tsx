@@ -306,145 +306,26 @@ const HeroSection = () => {
               </div>
             </motion.div>
 
-
-          </div>
-
-          {/* Right Column: Coded Animated Illustration */}
-          <div className="hidden lg:flex relative w-full aspect-square flex-col items-center justify-center p-8 mx-auto xl:-mr-20 z-20 overflow-visible scale-75 xl:scale-95 -mt-12 xl:-mt-24">
-            {/* The Road: Smooth Curved Zig-Zag */}
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-40 dark:opacity-30 overflow-visible">
-              <svg viewBox="0 0 1000 1000" className="w-full h-full fill-none overflow-visible">
-                <defs>
-                  <linearGradient id="roadGradient" x1="0%" y1="100%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="currentColor" stopOpacity="0.8" />
-                    <stop offset="100%" stopColor="currentColor" stopOpacity="0.4" />
-                  </linearGradient>
-                </defs>
-                {/* Main Curved Road Path - An 'S' curve zig-zag */}
-                <path
-                  id="hero-road"
-                  d="M 400 1100 C 400 900, 100 850, 150 700 C 200 550, 800 650, 850 450 C 900 250, 600 200, 950 50"
-                  stroke="url(#roadGradient)"
-                  className="text-slate-700 dark:text-slate-300"
-                  strokeWidth="45"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                {/* Dashed Center line */}
-                <path
-                  d="M 400 1100 C 400 900, 100 850, 150 700 C 200 550, 800 650, 850 450 C 900 250, 600 200, 950 50"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeDasharray="20 20"
-                  className="opacity-40"
-                />
-                {/* Road Glow */}
-                <path
-                  d="M 400 1100 C 400 900, 100 850, 150 700 C 200 550, 800 650, 850 450 C 900 250, 600 200, 950 50"
-                  stroke="currentColor"
-                  className="text-primary/10 blur-2xl"
-                  strokeWidth="80"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </div>
-
-            <div className="absolute inset-0 bg-primary/15 blur-[120px] rounded-full hidden lg:block -z-10 transform -translate-y-12" />
-
-            {/* Micro Bus Stop at the End Point (Top Rightish) */}
             <motion.div
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="absolute right-[5%] top-[8%] z-30 scale-50"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+              className="mt-6 md:mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-4 md:gap-6 text-muted-foreground text-xs md:text-sm"
             >
-              <div className="relative">
-                <div className="w-1.5 h-16 bg-slate-500 rounded-full shadow-lg" />
-                <div className="absolute top-0 -left-4 w-10 h-10 bg-primary rounded-lg flex items-center justify-center shadow-xl border-2 border-white/20">
-                  <Bus className="w-5 h-5 text-white" />
-                </div>
-                <div className="absolute bottom-0 -left-3 w-7 h-2 bg-slate-700 rounded-full" />
-              </div>
-            </motion.div>
-
-            {/* Taller Passengers waiting to board at the start */}
-            <div className="absolute left-[30%] bottom-[8%] z-30 flex items-end gap-2 scale-[0.15]">
-              {/* Passenger 1 (Taller) */}
-              <div className="relative z-20">
-                <div className="w-9 h-36 bg-pink-500 rounded-full shadow-lg relative">
-                  <div className="absolute -top-9 left-1 w-10 h-10 bg-orange-200 rounded-full flex items-center justify-center overflow-hidden border border-orange-300/50">
-                    <div className="w-[120%] h-full bg-amber-800 rounded-full absolute -top-1 -right-2"></div>
-                  </div>
-                </div>
-              </div>
-              {/* Passenger 2 (Taller) */}
-              <div className="relative z-10">
-                <div className="w-11 h-40 bg-emerald-500 rounded-full shadow-lg relative">
-                  <div className="absolute -top-10 left-2 w-11 h-11 bg-orange-200 rounded-full flex items-center justify-center overflow-hidden border border-orange-300/50">
-                    <div className="w-[110%] h-[110%] bg-slate-800 rounded-full absolute -top-3"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* The Static Bus at Starting Point */}
-            <motion.div
-              style={{
-                offsetPath: "path('M 400 1100 C 400 900, 100 850, 150 700 C 200 550, 800 650, 850 450 C 900 250, 600 200, 950 50')",
-                offsetRotate: "auto",
-                offsetDistance: "2%",
-                scale: 0.35,
-              }}
-              className="absolute z-20 flex flex-col items-center justify-center"
-            >
-              <div className="relative w-32 h-64 -rotate-90 origin-center">
-                <div className="absolute inset-2 bg-black/40 blur-xl rounded-2xl" />
-                <div className="absolute inset-0 bg-primary rounded-[40px] shadow-2xl border-x-4 border-black/10 flex flex-col">
-                  <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-16 h-20 bg-primary-foreground/20 rounded-lg flex flex-col gap-2 p-2" />
-                  <div className="mt-2 mx-1 h-16 bg-slate-900/95 rounded-t-[35px] border-t-4 border-slate-700 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 transform rotate-45" />
-                  </div>
-                  <div className="mt-2 px-1 flex flex-col gap-3 flex-1 overflow-hidden">
-                    {[...Array(5)].map((_, i) => (
-                      <div key={i} className="h-10 bg-slate-900/80 rounded-sm mx-1 shadow-inner" />
-                    ))}
-                  </div>
-                  <div className="h-8 bg-primary-foreground/10 rounded-b-[40px] mt-auto flex justify-between px-6 pb-2">
-                    <div className="w-4 h-2 bg-red-600 rounded-full" />
-                    <div className="w-4 h-2 bg-red-600 rounded-full" />
-                  </div>
-                  <div className="absolute top-6 left-1/2 -translate-x-1/2 w-full flex justify-between px-4">
-                    <div className="w-6 h-4 bg-yellow-200 rounded-full blur-[2px] shadow-[0_0_15px_rgba(253,224,71,0.8)]" />
-                    <div className="w-6 h-4 bg-yellow-200 rounded-full blur-[2px] shadow-[0_0_15px_rgba(253,224,71,0.8)]" />
-                  </div>
-                </div>
-              </div>
+              <span className="flex items-center gap-1.5">
+                100+ cities
+              </span>
+              <span className="flex items-center gap-1.5">
+                500+ bus operators
+              </span>
+              <span className="flex items-center gap-1.5">
+                4.8★ rating
+              </span>
             </motion.div>
           </div>
+
+          <div className="hidden lg:block h-32" />
         </div>
-
-        {/* Big Achievement Stats at the Bottom */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          viewport={{ once: true }}
-          className="mt-16 md:mt-24 border-t border-border/50 pt-10 md:pt-12"
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-12 text-center">
-            <div className="flex flex-col items-center">
-              <span className="text-3xl md:text-5xl font-black text-foreground mb-2 drop-shadow-sm">100+</span>
-              <span className="text-sm md:text-base text-muted-foreground font-medium uppercase tracking-[0.2em]">Cities</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-3xl md:text-5xl font-black text-secondary mb-2 drop-shadow-sm">500+</span>
-              <span className="text-sm md:text-base text-muted-foreground font-medium uppercase tracking-[0.2em]">Operators</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-3xl md:text-5xl font-black text-success mb-2 drop-shadow-sm">4.8★</span>
-              <span className="text-sm md:text-base text-muted-foreground font-medium uppercase tracking-[0.2em]">Rating</span>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </section>
   );

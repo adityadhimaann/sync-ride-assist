@@ -73,21 +73,26 @@ const HowItWorks = () => {
           {/* Scroll-Responsive Road Background - Relative to Steps */}
           <div className="absolute top-0 bottom-0 left-0 w-full pointer-events-none overflow-hidden -ml-8 md:-ml-12">
             <svg className="w-full h-full" viewBox="0 0 1000 1000" preserveAspectRatio="none">
-              {/* Broad Road Base */}
+              {/* Atmospheric Road Glow (Broad coloring) */}
               <path
                 d="M 150 0 L 150 1000"
-                className="stroke-slate-200 dark:stroke-slate-800/50 stroke-[200] md:stroke-[250] fill-none"
+                className="stroke-slate-100 dark:stroke-slate-900/20 stroke-[250] md:stroke-[350] fill-none blur-[60px] opacity-50"
               />
-              {/* Lane Markings */}
-              <path
-                d="M 150 0 L 150 1000"
-                className="stroke-slate-400 dark:stroke-slate-700/60 stroke-[4] md:stroke-[6] stroke-dasharray-[30,40] fill-none"
-              />
-              {/* Journey Progress Highlight */}
+              {/* Journey Progress Glow */}
               <motion.path
                 d="M 150 0 L 150 1000"
                 style={{ pathLength: smoothProgress }}
-                className="stroke-primary/30 stroke-[205] md:stroke-[255] fill-none blur-sm"
+                className="stroke-primary/20 stroke-[260] md:stroke-[360] fill-none blur-[40px]"
+              />
+              {/* Crisp Narrow Road Line */}
+              <path
+                d="M 150 0 L 150 1000"
+                className="stroke-slate-800 dark:stroke-slate-400/30 stroke-[2] md:stroke-[3] fill-none"
+              />
+              {/* Lane Markers */}
+              <path
+                d="M 150 0 L 150 1000"
+                className="stroke-slate-400 dark:stroke-slate-600/40 stroke-[1] stroke-dasharray-[10,20] fill-none"
               />
             </svg>
 
@@ -99,17 +104,17 @@ const HowItWorks = () => {
               }}
               className="absolute z-30 -translate-x-1/2 -translate-y-1/2"
             >
-              <div className="relative w-10 md:w-12 h-16 md:h-22 drop-shadow-xl flex flex-col items-center">
-                <div className="w-full h-full bg-primary rounded-md md:rounded-lg overflow-hidden shadow-2xl flex flex-col border-x-[1.5px] md:border-x-2 border-black/10">
+              <div className="relative w-8 md:w-10 h-14 md:h-18 drop-shadow-2xl flex flex-col items-center">
+                <div className="w-full h-full bg-primary rounded-md md:rounded-lg overflow-hidden shadow-2xl flex flex-col border-x-[1px] md:border-x-[1.5px] border-black/10">
                   <div className="w-3/4 h-1 bg-white/20 rounded-b-lg mx-auto" />
 
                   {/* Miniature windshield */}
-                  <div className="mx-0.5 mt-1 h-4 md:h-6 bg-slate-900/95 rounded-t-sm shadow-inner relative" />
+                  <div className="mx-0.5 mt-1 h-3 md:h-5 bg-slate-900/95 rounded-t-sm shadow-inner relative" />
 
                   {/* Windows */}
-                  <div className="mx-0.5 mt-1 flex flex-col gap-0.5 flex-1">
-                    <div className="h-2 md:h-3 bg-slate-900/80 rounded-sm" />
-                    <div className="h-2 md:h-3 bg-slate-900/80 rounded-sm" />
+                  <div className="mx-0.5 mt-0.5 flex flex-col gap-0.5 flex-1">
+                    <div className="h-2 md:h-2.5 bg-slate-900/80 rounded-sm" />
+                    <div className="h-2 md:h-2.5 bg-slate-900/80 rounded-sm" />
                   </div>
 
                   {/* Micro Lights */}

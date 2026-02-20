@@ -379,19 +379,19 @@ const HeroSection = () => {
               </div>
             </motion.div>
 
-            {/* Tiny Passengers waiting at the bus stop */}
-            <div className="absolute right-[12%] top-[10%] z-30 flex items-end gap-1.5 scale-[0.08]">
-              {/* Passenger 1 */}
+            {/* Taller Passengers waiting to board at the start */}
+            <div className="absolute left-[30%] bottom-[8%] z-30 flex items-end gap-2 scale-[0.15]">
+              {/* Passenger 1 (Taller) */}
               <div className="relative z-20">
-                <div className="w-9 h-24 bg-pink-500 rounded-full shadow-lg relative">
+                <div className="w-9 h-36 bg-pink-500 rounded-full shadow-lg relative">
                   <div className="absolute -top-9 left-1 w-10 h-10 bg-orange-200 rounded-full flex items-center justify-center overflow-hidden border border-orange-300/50">
                     <div className="w-[120%] h-full bg-amber-800 rounded-full absolute -top-1 -right-2"></div>
                   </div>
                 </div>
               </div>
-              {/* Passenger 2 */}
+              {/* Passenger 2 (Taller) */}
               <div className="relative z-10">
-                <div className="w-11 h-28 bg-emerald-500 rounded-full shadow-lg relative">
+                <div className="w-11 h-40 bg-emerald-500 rounded-full shadow-lg relative">
                   <div className="absolute -top-10 left-2 w-11 h-11 bg-orange-200 rounded-full flex items-center justify-center overflow-hidden border border-orange-300/50">
                     <div className="w-[110%] h-[110%] bg-slate-800 rounded-full absolute -top-3"></div>
                   </div>
@@ -399,20 +399,13 @@ const HeroSection = () => {
               </div>
             </div>
 
-            {/* The perfectly diseñado Bus - Dynamic Path Following */}
+            {/* The Static Bus at Starting Point */}
             <motion.div
               style={{
                 offsetPath: "path('M 400 1100 C 400 900, 100 850, 150 700 C 200 550, 800 650, 850 450 C 900 250, 600 200, 950 50')",
                 offsetRotate: "auto",
-              }}
-              animate={{
-                offsetDistance: ["0%", "100%"],
-                scale: [0.35, 0.3, 0.2, 0.15, 0.1],
-              }}
-              transition={{
-                repeat: Infinity,
-                duration: 15,
-                ease: "linear"
+                offsetDistance: "2%",
+                scale: 0.35,
               }}
               className="absolute z-20 flex flex-col items-center justify-center"
             >

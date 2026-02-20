@@ -378,9 +378,9 @@ const HeroSection = () => {
 
             {/* The Passengers waiting at the bus stop */}
             <motion.div
-              animate={{ y: [0, -5, 0] }}
+              animate={{ y: [0, -3, 0] }}
               transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-              className="absolute right-[8%] top-[22%] z-30 flex items-end gap-4 scale-[0.3]"
+              className="absolute right-[8%] top-[22%] z-30 flex items-end gap-3 scale-[0.2]"
             >
               {/* Passenger 1 (Woman) */}
               <div className="relative z-20">
@@ -414,8 +414,8 @@ const HeroSection = () => {
               animate={{
                 x: [50, 50, -250, 350, 480],
                 y: [450, 200, 0, -200, -350],
-                scale: [0.6, 0.5, 0.4, 0.3, 0.2],
-                rotate: [0, 0, -10, 10, 5]
+                scale: [0.4, 0.3, 0.2, 0.15, 0.1],
+                rotate: [180, 180, 130, 230, 210] // Faced "Up" (180) and following turns
               }}
               transition={{
                 repeat: Infinity,

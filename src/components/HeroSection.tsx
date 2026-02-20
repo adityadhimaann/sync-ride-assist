@@ -119,7 +119,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-[85vh] flex items-center justify-center pt-24 pb-8 md:pt-28 md:pb-0 overflow-x-hidden bg-background">
+    <section className="relative min-h-[85vh] flex items-center justify-center pt-16 pb-8 md:pt-20 md:pb-0 overflow-x-hidden bg-background">
       {/* Dynamic Map Background */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-transparent to-background/80 z-10" />
@@ -156,7 +156,7 @@ const HeroSection = () => {
 
 
 
-      <div className="container mx-auto px-4 relative z-10 pt-24 pb-12">
+      <div className="container mx-auto px-4 relative z-10 pt-4 pb-12">
         <div className="flex flex-col items-center justify-center max-w-4xl mx-auto">
           {/* Main Content: Text & Planner */}
           <div className="flex flex-col items-center text-center w-full mb-12">

@@ -141,7 +141,7 @@ const Navbar = () => {
                 </Link>
                 {!isTrackingPage && (
                   <Link to="/signup">
-                    <Button variant="hero" size="sm" className="px-6 bg-secondary text-white hover:bg-secondary/90 border-none">Sign Up</Button>
+                    <Button variant="secondary" size="sm" className="px-6">Sign Up</Button>
                   </Link>
                 )}
               </div>
@@ -167,7 +167,7 @@ const Navbar = () => {
                     <Button variant="ghost" size="sm" className="h-9 px-3 rounded-xl text-xs font-bold text-white hover:bg-white/10 hover:text-white">Login</Button>
                   </Link>
                   <Link to="/signup">
-                    <Button variant="hero" size="sm" className="h-9 px-4 rounded-xl text-xs font-bold bg-secondary text-white hover:bg-secondary/90 shadow-lg border-none">Sign Up</Button>
+                    <Button variant="secondary" size="sm" className="h-9 px-4 rounded-xl text-xs font-bold shadow-lg">Sign Up</Button>
                   </Link>
                 </div>
               )}

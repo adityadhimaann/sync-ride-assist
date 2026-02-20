@@ -156,35 +156,38 @@ const HeroSection = () => {
 
 
 
-      <div className="container mx-auto px-4 relative z-10 pt-4 pb-12">
-        <div className="flex flex-col items-center justify-center max-w-4xl mx-auto">
-          {/* Main Content: Text & Planner */}
-          <div className="flex flex-col items-center text-center w-full mb-12">
+      <div className="relative z-10 pt-4 pb-12 w-full">
+        <div className="flex flex-col items-center justify-center w-full mx-auto">
+          {/* Badge: Centered in container */}
+          <div className="container mx-auto px-4 text-center mb-4">
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-              <span className="inline-flex items-center px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-primary/10 backdrop-blur-md text-primary/90 text-xs md:text-sm font-medium mb-4 md:mb-6">
+              <span className="inline-flex items-center px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-primary/10 backdrop-blur-md text-primary/90 text-xs md:text-sm font-medium">
                 Trusted by 50,000+ travelers across India
               </span>
             </motion.div>
+          </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="w-full max-w-4xl mx-auto mb-8"
-            >
-              <img
-                src="/assets/SyncRidebanner.png"
-                alt="SyncRide - Never Miss Your Intercity Bus Again"
-                className="w-full h-auto object-contain drop-shadow-2xl"
-              />
-            </motion.div>
+          {/* Full-width Banner Image */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.1 }}
+            className="w-full relative z-0"
+          >
+            <img
+              src="/assets/SyncRidebanner.png"
+              alt="SyncRide Banner"
+              className="w-full h-auto min-h-[250px] object-cover md:object-contain"
+            />
+          </motion.div>
 
-            {/* Journey Planner Card */}
+          {/* Journey Planner Card: Overlapping the banner */}
+          <div className="container mx-auto px-4 relative z-10 -mt-20 md:-mt-32">
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3 }}
-              className="w-full max-w-2xl bg-card/95 backdrop-blur-2xl rounded-3xl p-6 md:p-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] dark:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.4)] relative border border-border/50"
+              className="w-full max-w-2xl mx-auto bg-card/95 backdrop-blur-2xl rounded-3xl p-6 md:p-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] dark:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] border border-border/50"
             >
               <div className="space-y-5">
                 {/* Start Point */}

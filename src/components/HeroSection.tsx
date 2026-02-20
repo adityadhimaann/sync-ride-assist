@@ -156,10 +156,10 @@ const HeroSection = () => {
 
 
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-3xl mx-auto text-center">
+      <div className="container mx-auto relative z-10">
+        <div className=" text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-primary/10 backdrop-blur-md text-primary/90 text-xs md:text-sm font-medium mb-4 md:mb-6">
+            <span className="inline-flex items-center md:px-4 md:py-2 rounded-full bg-primary/10 backdrop-blur-md text-primary/90 text-xs md:text-sm font-medium mb-4 md:mb-6">
               Trusted by 50,000+ travelers across India
             </span>
           </motion.div>
@@ -255,7 +255,7 @@ const HeroSection = () => {
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full flex-1 max-w-full h-11 pl-11 pr-3 rounded-xl border-2 border-border bg-background text-foreground text-sm focus:border-primary focus:outline-none transition-colors appearance-none outline-none"
+                    className="w-full flex-1 max-w-full h-11 pl-11 pr-3 rounded-xl border-2 border-border bg-background text-foreground text-sm focus:border-primary focus:outline-none transition-colors outline-none"
                   />
                 </div>
                 <div className="relative w-full sm:flex-1 min-w-0 flex">
@@ -264,7 +264,7 @@ const HeroSection = () => {
                     type="time"
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
-                    className="w-full flex-1 max-w-full h-11 pl-11 pr-3 rounded-xl border-2 border-border bg-background text-foreground text-sm focus:border-primary focus:outline-none transition-colors appearance-none outline-none"
+                    className="w-full flex-1 max-w-full h-11 pl-11 pr-3 rounded-xl border-2 border-border bg-background text-foreground text-sm focus:border-primary focus:outline-none transition-colors outline-none"
                   />
                 </div>
               </div>

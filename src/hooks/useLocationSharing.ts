@@ -5,10 +5,11 @@ import {
   updateLiveLocation,
   onLocationChange,
   getUserActiveShares,
+  logUserActivity,
   type UserLocation,
-  type LocationShare,
 } from "@/lib/database";
 import { useAuth } from "@/contexts/AuthContext";
+import { getErrorMessage } from "@/lib/errors";
 
 interface UseLocationSharingReturn {
   isSharing: boolean;
@@ -25,8 +26,13 @@ export function useLocationSharing(): UseLocationSharingReturn {
   const [isSharing, setIsSharing] = useState(false);
   const [shareId, setShareId] = useState<string | null>(null);
   const [currentLocation, setCurrentLocation] = useState<GeolocationPosition | null>(null);
+  const currentLocationRef = useRef<GeolocationPosition | null>(null);
   const [error, setError] = useState<string | null>(null);
   const watchIdRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    currentLocationRef.current = currentLocation;
+  }, [currentLocation]);
 
   // Clean up on unmount
   useEffect(() => {
@@ -63,7 +69,7 @@ export function useLocationSharing(): UseLocationSharingReturn {
       (err) => {
         console.warn("Geolocation error:", err.message);
         // Don't set error if we already have a location
-        if (!currentLocation) setError(err.message);
+        if (!currentLocationRef.current) setError(err.message);
       },
       {
         enableHighAccuracy: false, // Set to false first for faster initial lock
@@ -96,9 +102,18 @@ export function useLocationSharing(): UseLocationSharingReturn {
         setShareId(id);
         setIsSharing(true);
         setError(null);
+        await logUserActivity(user.uid, {
+          type: "location_sharing",
+          title: "Live location sharing started",
+          description: "Your location sharing session is active.",
+          metadata: {
+            shareId: id,
+            durationMinutes: options?.durationMinutes || 120,
+          },
+        }).catch(() => undefined);
         return id;
-      } catch (err: any) {
-        setError(err.message || "Failed to start location sharing");
+      } catch (err: unknown) {
+        setError(getErrorMessage(err, "Failed to start location sharing"));
         return null;
       }
     },
@@ -113,6 +128,12 @@ export function useLocationSharing(): UseLocationSharingReturn {
 
     if (user && shareId) {
       await stopLocationSharing(user.uid, shareId);
+      await logUserActivity(user.uid, {
+        type: "location_sharing",
+        title: "Live location sharing stopped",
+        description: "Your location sharing session was turned off.",
+        metadata: { shareId },
+      }).catch(() => undefined);
     }
 
     setIsSharing(false);

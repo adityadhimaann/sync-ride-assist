@@ -76,12 +76,18 @@ const busAmenities = [
   { icon: Volume2, label: "Entertainment" },
 ];
 
+interface NominatimResult {
+  display_name: string;
+  lat: string;
+  lon: string;
+}
+
 // Component that animates driver position
 // ── Map Controller Components ──
 
 function MapSearch({ onLocationSelect }: { onLocationSelect: (lat: number, lng: number) => void }) {
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [suggestions, setSuggestions] = useState<NominatimResult[]>([]);
   const [searching, setSearching] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const map = useMap();
@@ -106,7 +112,7 @@ function MapSearch({ onLocationSelect }: { onLocationSelect: (lat: number, lng: 
     return () => clearTimeout(timer);
   }, [query]);
 
-  const handleSelect = (s: any) => {
+  const handleSelect = (s: NominatimResult) => {
     const lat = parseFloat(s.lat);
     const lng = parseFloat(s.lon);
     map.flyTo([lat, lng], 14);
@@ -280,7 +286,7 @@ const LiveTracking = () => {
       }
     };
     requestLocation();
-  }, []);
+  }, [isSharing]);
 
   // Use real location if sharing, otherwise use simulated
   const userPosition: [number, number] = currentLocation

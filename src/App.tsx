@@ -9,6 +9,7 @@ import Navbar from "@/components/Navbar";
 import Loading from "@/components/Loading";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import ThemeProvider from "@/components/ThemeProvider";
 
 const Index = lazy(() => import("./pages/Index"));
 const JourneyResults = lazy(() => import("./pages/JourneyResults"));
@@ -19,6 +20,7 @@ const TripInsurance = lazy(() => import("./pages/TripInsurance"));
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
 const Profile = lazy(() => import("./pages/Profile"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -47,33 +49,36 @@ const LenisProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 const App = () => (
-  <AuthProvider>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <LenisProvider>
-            <Navbar />
-            <Suspense fallback={<Loading />}>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/results" element={<ProtectedRoute><JourneyResults /></ProtectedRoute>} />
-                <Route path="/tracking" element={<ProtectedRoute><LiveTracking /></ProtectedRoute>} />
-                <Route path="/conductor" element={<ProtectedRoute><ConductorDashboard /></ProtectedRoute>} />
-                <Route path="/safety" element={<SafetyCenter />} />
-                <Route path="/insurance" element={<ProtectedRoute><TripInsurance /></ProtectedRoute>} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
-          </LenisProvider>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </AuthProvider>
+  <ThemeProvider>
+    <AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <LenisProvider>
+              <Navbar />
+              <Suspense fallback={<Loading />}>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/results" element={<ProtectedRoute><JourneyResults /></ProtectedRoute>} />
+                  <Route path="/tracking" element={<ProtectedRoute><LiveTracking /></ProtectedRoute>} />
+                  <Route path="/conductor" element={<ProtectedRoute><ConductorDashboard /></ProtectedRoute>} />
+                  <Route path="/safety" element={<SafetyCenter />} />
+                  <Route path="/insurance" element={<ProtectedRoute><TripInsurance /></ProtectedRoute>} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                  <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
+            </LenisProvider>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </AuthProvider>
+  </ThemeProvider>
 );
 
 export default App;

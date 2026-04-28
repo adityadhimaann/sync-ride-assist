@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebase";
-import { ref, set, get, push, onValue, update, off, remove, query, orderByChild, equalTo } from "firebase/database";
+import { ref, set, get, push, onValue, update, off, remove } from "firebase/database";
 import type { Unsubscribe } from "firebase/database";
 
 // ── User Profiles ──
@@ -14,7 +14,7 @@ export interface UserProfile {
 }
 
 export const saveUserProfile = async (uid: string, profile: UserProfile) => {
-  await set(ref(db, `users/${uid}`), profile);
+  await update(ref(db, `users/${uid}`), profile);
 };
 
 export const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
@@ -24,6 +24,88 @@ export const getUserProfile = async (uid: string): Promise<UserProfile | null> =
 
 export const updateUserProfileField = async (uid: string, fields: Partial<UserProfile>) => {
   await update(ref(db, `users/${uid}`), fields);
+};
+
+// ── User Activity / Dashboard ──
+
+export type ActivityType =
+  | "auth"
+  | "journey_search"
+  | "trip_booked"
+  | "location_sharing"
+  | "profile"
+  | "safety";
+
+export interface UserActivity {
+  type: ActivityType;
+  title: string;
+  description: string;
+  createdAt: number;
+  metadata?: Record<string, string | number | boolean | null>;
+}
+
+export interface DashboardJourneySearch {
+  startPoint: string;
+  busStation: string;
+  destination: string;
+  date?: string;
+  time?: string;
+  createdAt: number;
+}
+
+export interface DashboardSnapshot {
+  profile: UserProfile | null;
+  trips: Record<string, Trip>;
+  searches: DashboardJourneySearch[];
+  activities: UserActivity[];
+  activeShares: LocationShare[];
+}
+
+export const logUserActivity = async (uid: string, activity: Omit<UserActivity, "createdAt"> & { createdAt?: number }) => {
+  const activitiesRef = ref(db, `users/${uid}/activities`);
+  const newActivityRef = push(activitiesRef);
+  await set(newActivityRef, {
+    ...activity,
+    createdAt: activity.createdAt || Date.now(),
+  });
+};
+
+export const getUserActivities = async (uid: string, limit = 20): Promise<UserActivity[]> => {
+  const snapshot = await get(ref(db, `users/${uid}/activities`));
+  if (!snapshot.exists()) return [];
+
+  const activities = snapshot.val() as Record<string, UserActivity>;
+  return Object.values(activities)
+    .sort((a, b) => b.createdAt - a.createdAt)
+    .slice(0, limit);
+};
+
+export const getUserJourneySearches = async (uid: string, limit = 6): Promise<DashboardJourneySearch[]> => {
+  const snapshot = await get(ref(db, `users/${uid}/journey_searches`));
+  if (!snapshot.exists()) return [];
+
+  const searches = snapshot.val() as Record<string, DashboardJourneySearch>;
+  return Object.values(searches)
+    .sort((a, b) => b.createdAt - a.createdAt)
+    .slice(0, limit);
+};
+
+export const getUserDashboardSnapshot = async (uid: string): Promise<DashboardSnapshot> => {
+  const [profile, trips, searches, activities, activeShares] = await Promise.all([
+    getUserProfile(uid),
+    getUserTrips(uid),
+    getUserJourneySearches(uid),
+    getUserActivities(uid),
+    getUserActiveShares(uid),
+  ]);
+
+  return {
+    profile,
+    trips,
+    searches,
+    activities,
+    activeShares,
+  };
 };
 
 // ── Usernames (unique, user-chosen) ──
@@ -276,6 +358,7 @@ export const startLocationSharing = async (
   };
 
   await set(newShareRef, shareData);
+  await set(ref(db, `users/${uid}/location_shares/${shareId}`), shareData);
 
   // Create initial location entry
   await set(ref(db, `live_locations/${uid}`), {
@@ -311,6 +394,7 @@ export const updateLiveLocation = async (uid: string, position: GeolocationPosit
 export const stopLocationSharing = async (uid: string, shareId: string) => {
   await update(ref(db, `live_locations/${uid}`), { isSharing: false });
   await update(ref(db, `location_shares/${shareId}`), { isActive: false });
+  await update(ref(db, `users/${uid}/location_shares/${shareId}`), { isActive: false });
 };
 
 // Listen to someone's real-time location
@@ -333,7 +417,7 @@ export const getLocationShare = async (shareId: string): Promise<LocationShare |
 
 // Get all active shares for a user
 export const getUserActiveShares = async (uid: string): Promise<LocationShare[]> => {
-  const snapshot = await get(ref(db, "location_shares"));
+  const snapshot = await get(ref(db, `users/${uid}/location_shares`));
   if (!snapshot.exists()) return [];
 
   const all = snapshot.val() as Record<string, LocationShare>;

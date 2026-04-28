@@ -10,7 +10,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import {
   getUserProfile,
   saveUserProfile,
-  updateUserProfileField,
   checkUsernameAvailable,
   claimUsername,
   compressImage,
@@ -19,6 +18,7 @@ import {
 } from "@/lib/database";
 import { useLocationSharing } from "@/hooks/useLocationSharing";
 import { Link, useNavigate } from "react-router-dom";
+import { getErrorMessage } from "@/lib/errors";
 
 const Profile = () => {
   const { user, logout } = useAuth();
@@ -103,7 +103,7 @@ const Profile = () => {
       } else {
         toast.success("Profile updated!");
       }
-    } catch (err: any) { toast.error(err.message || "Failed to save"); }
+    } catch (err: unknown) { toast.error(getErrorMessage(err, "Failed to save")); }
     finally { setSaving(false); }
   };
 
@@ -117,7 +117,7 @@ const Profile = () => {
       setProfilePhoto(compressed);
       await saveProfilePicture(user.uid, compressed);
       toast.success("Profile picture updated!");
-    } catch (err: any) { toast.error(err.message || "Failed to upload photo"); }
+    } catch (err: unknown) { toast.error(getErrorMessage(err, "Failed to upload photo")); }
     finally { setUploadingPhoto(false); }
   };
 
@@ -131,11 +131,12 @@ const Profile = () => {
         if (id) toast.success("Location sharing started! Live for 2 hours.");
         else if (locationError) toast.error(locationError);
       }
-    } catch (err: any) {
-      if (err.message?.includes("PERMISSION_DENIED")) {
+    } catch (err: unknown) {
+      const message = getErrorMessage(err, "Failed to toggle location sharing");
+      if (message.includes("PERMISSION_DENIED")) {
         toast.error("Firebase Permission Denied! Please update your Database Rules to allow location_shares access.");
       } else {
-        toast.error(err.message || "Failed to toggle location sharing");
+        toast.error(message);
       }
     }
   };

@@ -6,11 +6,15 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { MapContainer, TileLayer, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
 
+interface NominatimResult {
+  display_name: string;
+  lat: string;
+  lon: string;
+}
 
 // Helper to fetch suggestions from Nominatim
-const fetchSuggestions = async (query: string) => {
+const fetchSuggestions = async (query: string): Promise<NominatimResult[]> => {
   if (query.length < 3) return [];
   try {
     const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=in&limit=5`);
@@ -22,7 +26,7 @@ const fetchSuggestions = async (query: string) => {
 };
 
 const SuggestionsList = ({ currentQuery, onSelect, visible }: { currentQuery: string, onSelect: (val: string) => void, visible: boolean }) => {
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<NominatimResult[]>([]);
 
   useEffect(() => {
     const timer = setTimeout(async () => {

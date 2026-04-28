@@ -17,9 +17,10 @@ import {
   type JourneySearchParams,
   type JourneyPlanAlternative,
 } from "@/lib/journey-planner";
-import { saveTrip } from "@/lib/database";
+import { logUserActivity, saveTrip } from "@/lib/database";
 import { useAuth } from "@/contexts/AuthContext";
 import type { JourneyLeg } from "@/types/trip";
+import { getErrorMessage } from "@/lib/errors";
 
 const legIcons: Record<string, typeof MapPin> = {
   local_transport: MapPin,
@@ -130,7 +131,7 @@ const JourneyResults = () => {
       await saveJourneyPlan(user.uid, activePlan as JourneyPlan);
 
       // Also save as a trip
-      await saveTrip({
+      const tripId = await saveTrip({
         userId: user.uid,
         from: journeyParams.startPoint,
         to: journeyParams.destination,
@@ -155,10 +156,21 @@ const JourneyResults = () => {
         createdAt: Date.now(),
       });
 
+      await logUserActivity(user.uid, {
+        type: "trip_booked",
+        title: "Journey booked",
+        description: `${journeyParams.startPoint} to ${journeyParams.destination}`,
+        metadata: {
+          tripId,
+          totalCost,
+          protectionEnabled,
+        },
+      }).catch(() => undefined);
+
       toast.success("Journey booked successfully! 🎉");
-      navigate("/tracking");
-    } catch (err: any) {
-      toast.error(err.message || "Failed to book journey");
+      navigate("/dashboard");
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, "Failed to book journey"));
     } finally {
       setBooking(false);
     }

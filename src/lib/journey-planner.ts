@@ -1,6 +1,7 @@
 import { db } from "@/lib/firebase";
 import { ref, set, push, get } from "firebase/database";
 import type { JourneyLeg } from "@/types/trip";
+import { logUserActivity } from "@/lib/database";
 
 // ── Types ──
 
@@ -428,6 +429,16 @@ export const saveJourneySearch = async (
     ...params,
     createdAt: Date.now(),
   });
+  await logUserActivity(userId, {
+    type: "journey_search",
+    title: "Journey searched",
+    description: `${params.startPoint} to ${params.destination}`,
+    metadata: {
+      busStation: params.busStation,
+      date: params.date || null,
+      time: params.time || null,
+    },
+  }).catch(() => undefined);
   return newRef.key!;
 };
 

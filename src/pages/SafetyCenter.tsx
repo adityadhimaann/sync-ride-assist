@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import { useLocationSharing } from "@/hooks/useLocationSharing";
 import { toast } from "sonner";
 import { Copy, Loader2 } from "lucide-react";
+import { getErrorMessage } from "@/lib/errors";
 
 interface EmergencyContact {
   id: string;
@@ -98,8 +99,8 @@ const SafetyCenter = () => {
         if (id) toast.success("Location sharing started! Live for 2 hours.");
         else if (locationError) toast.error(locationError);
       }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to toggle location sharing");
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, "Failed to toggle location sharing"));
     }
   };
 

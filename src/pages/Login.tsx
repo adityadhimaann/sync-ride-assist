@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import type { ConfirmationResult } from "firebase/auth";
+import { getErrorMessage } from "@/lib/errors";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -34,9 +35,9 @@ const Login = () => {
     try {
       await login(email, password);
       toast.success("Welcome back!");
-      navigate("/");
-    } catch (err: any) {
-      toast.error(err.message || "Login failed");
+      navigate("/dashboard");
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, "Login failed"));
     } finally {
       setLoading(false);
     }
@@ -46,9 +47,9 @@ const Login = () => {
     try {
       await loginWithGoogle();
       toast.success("Welcome!");
-      navigate("/");
-    } catch (err: any) {
-      toast.error(err.message || "Google sign-in failed");
+      navigate("/dashboard");
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, "Google sign-in failed"));
     }
   };
 
@@ -64,8 +65,8 @@ const Login = () => {
       setConfirmationResult(result);
       setOtpSent(true);
       toast.success("OTP sent to " + formattedPhone);
-    } catch (err: any) {
-      toast.error(err.message || "Failed to send OTP");
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, "Failed to send OTP"));
     } finally {
       setLoading(false);
     }
@@ -81,9 +82,9 @@ const Login = () => {
     try {
       await verifyPhoneOtp(confirmationResult, otp);
       toast.success("Welcome back!");
-      navigate("/");
-    } catch (err: any) {
-      toast.error(err.message || "Invalid OTP");
+      navigate("/dashboard");
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, "Invalid OTP"));
     } finally {
       setLoading(false);
     }

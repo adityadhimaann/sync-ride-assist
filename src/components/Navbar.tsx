@@ -2,29 +2,22 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Menu, X, Shield, User, LogOut,
-  MapPin, Navigation, Calendar,
-  Settings, Home, Contact, Lock, Activity
+  Shield, User, LogOut,
+  Navigation, Home, Contact, Lock, Activity, LayoutDashboard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { getUserProfile, type UserProfile } from "@/lib/database";
 import { toast } from "sonner";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const navItems = [
   { label: "Plan Journey", href: "/", icon: Home },
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Live Tracking", href: "/tracking", icon: Navigation },
   { label: "Safety", href: "/safety", icon: Shield },
   { label: "Insurance", href: "/insurance", icon: Lock },
   { label: "Conductor", href: "/conductor", icon: Contact },
-];
-
-const mobileNavItems = [
-  { label: "Plan", href: "/", icon: Home },
-  { label: "Tracking", href: "/tracking", icon: Navigation },
-  { label: "Safety", href: "/safety", icon: Shield },
-  { label: "Conductor", href: "/conductor", icon: Contact },
-  { label: "Profile", href: "/profile", icon: User },
 ];
 
 const Navbar = () => {
@@ -47,7 +40,6 @@ const Navbar = () => {
     navigate("/");
   };
 
-  const displayName = profile?.username ? `@${profile.username}` : profile?.name || user?.displayName || user?.email;
   const avatarUrl = profile?.photoURL || user?.photoURL;
 
   return (
@@ -107,6 +99,14 @@ const Navbar = () => {
           </div>
 
           <div className={`flex items-center ${isTrackingPage ? "mt-auto flex-col gap-6" : "gap-3"}`}>
+            <ThemeToggle
+              className={
+                isTrackingPage
+                  ? "border-border/60 bg-card/70 text-foreground hover:bg-accent"
+                  : "hidden md:inline-flex border-none bg-transparent text-white hover:bg-transparent hover:text-white"
+              }
+            />
+
             {user ? (
               <div className={`flex ${isTrackingPage ? "flex-col gap-6" : "hidden md:flex items-center gap-4"}`}>
                 <Link to="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
@@ -149,6 +149,8 @@ const Navbar = () => {
 
             {/* User Profile / Mobile Actions (Top Right) */}
             <div className="md:hidden flex items-center gap-3">
+              <ThemeToggle className={!isTrackingPage ? "border-white/20 bg-white/10 text-white hover:bg-white/20 hover:text-white" : "border-border/60 bg-card/70 text-foreground hover:bg-accent"} />
+
               {user ? (
                 <Link to="/profile">
                   <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-primary/20 bg-card/80 backdrop-blur-md">
@@ -217,6 +219,14 @@ const Navbar = () => {
               {user && (
                 <>
                   <div className="h-px bg-border/50 my-2" />
+                  <Link
+                    to="/profile"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-3 p-3 rounded-xl transition-all text-muted-foreground hover:bg-accent"
+                  >
+                    <User className="h-5 w-5" />
+                    <span className="font-semibold text-sm">Profile</span>
+                  </Link>
                   <button
                     onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}
                     className="flex items-center gap-3 p-3 rounded-xl transition-all text-destructive hover:bg-destructive/10 w-full text-left"

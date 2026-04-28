@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import type { ConfirmationResult } from "firebase/auth";
+import { getErrorMessage } from "@/lib/errors";
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -32,13 +33,17 @@ const Signup = () => {
       toast.error("Please fill in all required fields");
       return;
     }
+    if (password.length < 6) {
+      toast.error("Password should be at least 6 characters");
+      return;
+    }
     setLoading(true);
     try {
       await signup(email, password, name, phone);
       toast.success("Account created! Welcome to SyncRide 🎉");
-      navigate("/");
-    } catch (err: any) {
-      toast.error(err.message || "Signup failed");
+      navigate("/dashboard");
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, "Signup failed"));
     } finally {
       setLoading(false);
     }
@@ -48,9 +53,9 @@ const Signup = () => {
     try {
       await loginWithGoogle();
       toast.success("Welcome to SyncRide 🎉");
-      navigate("/");
-    } catch (err: any) {
-      toast.error(err.message || "Google sign-in failed");
+      navigate("/dashboard");
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, "Google sign-in failed"));
     }
   };
 
@@ -66,8 +71,8 @@ const Signup = () => {
       setConfirmationResult(result);
       setOtpSent(true);
       toast.success("OTP sent to " + formattedPhone);
-    } catch (err: any) {
-      toast.error(err.message || "Failed to send OTP");
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, "Failed to send OTP"));
     } finally {
       setLoading(false);
     }
@@ -83,9 +88,9 @@ const Signup = () => {
     try {
       await verifyPhoneOtp(confirmationResult, otp);
       toast.success("Account created! Welcome to SyncRide 🎉");
-      navigate("/");
-    } catch (err: any) {
-      toast.error(err.message || "Invalid OTP");
+      navigate("/dashboard");
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, "Invalid OTP"));
     } finally {
       setLoading(false);
     }

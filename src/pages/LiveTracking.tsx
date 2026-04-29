@@ -24,6 +24,9 @@ import {
   X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { MapContainer, Marker, Polyline, Popup, TileLayer, useMap } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -40,7 +43,6 @@ import {
   type TripTrackingState,
 } from "@/lib/database";
 import { getErrorMessage } from "@/lib/errors";
-import { isGoogleMapsConfigured, loadGoogleMaps } from "@/lib/google-maps";
 
 const DEFAULT_CENTER: [number, number] = [20.5937, 78.9629];
 
@@ -54,88 +56,43 @@ interface ActiveTrip extends Trip {
   id: string;
 }
 
-interface PlacePrediction {
-  description: string;
-  place_id: string;
+interface NominatimResult {
+  display_name: string;
+  lat: string;
+  lon: string;
 }
-
-type GoogleLatLng = { lat: number; lng: number };
-
-interface GoogleMapInstance {
-  fitBounds: (bounds: GoogleBounds, padding?: number) => void;
-  panTo: (position: GoogleLatLng) => void;
-  setCenter: (position: GoogleLatLng) => void;
-  setZoom: (zoom: number) => void;
-}
-
-interface GoogleBounds {
-  extend: (position: GoogleLatLng) => void;
-  isEmpty: () => boolean;
-}
-
-interface GoogleMarker {
-  addListener: (eventName: string, handler: () => void) => void;
-  setMap: (map: GoogleMapInstance | null) => void;
-}
-
-interface GooglePolyline {
-  setMap: (map: GoogleMapInstance | null) => void;
-}
-
-interface GoogleDirectionsRenderer {
-  setDirections: (result: unknown) => void;
-  setMap: (map: GoogleMapInstance | null) => void;
-}
-
-interface GoogleInfoWindow {
-  open: (options: { anchor: GoogleMarker; map: GoogleMapInstance }) => void;
-}
-
-interface GoogleGeocoderResult {
-  formatted_address?: string;
-  geometry?: {
-    location?: {
-      lat: () => number;
-      lng: () => number;
-    };
-  };
-}
-
-interface GoogleMapsApi {
-  DirectionsRenderer: new (options: Record<string, unknown>) => GoogleDirectionsRenderer;
-  DirectionsService: new () => {
-    route: (request: Record<string, unknown>, callback: (result: unknown, status: string) => void) => void;
-  };
-  Geocoder: new () => {
-    geocode: (
-      request: Record<string, unknown>,
-      callback: (results: GoogleGeocoderResult[] | null, status: string) => void
-    ) => void;
-  };
-  InfoWindow: new (options: Record<string, unknown>) => GoogleInfoWindow;
-  LatLngBounds: new () => GoogleBounds;
-  Map: new (element: HTMLElement, options: Record<string, unknown>) => GoogleMapInstance;
-  Marker: new (options: Record<string, unknown>) => GoogleMarker;
-  Point: new (x: number, y: number) => unknown;
-  Polyline: new (options: Record<string, unknown>) => GooglePolyline;
-  Size: new (width: number, height: number) => unknown;
-  TravelMode: { DRIVING: string };
-  places: {
-    AutocompleteService: new () => {
-      getPlacePredictions: (
-        request: Record<string, unknown>,
-        callback: (predictions: PlacePrediction[] | null, status: string) => void
-      ) => void;
-    };
-    PlacesServiceStatus: { OK: string };
-  };
-}
-
-const getMapsApi = (google: { maps: Record<string, unknown> }) => google.maps as unknown as GoogleMapsApi;
 
 const stopMapScrollCapture = (event: React.WheelEvent | React.TouchEvent) => {
   event.stopPropagation();
 };
+
+const createIcon = (color: string, label: string) =>
+  L.divIcon({
+    className: "",
+    iconSize: [52, 62],
+    iconAnchor: [26, 58],
+    popupAnchor: [0, -54],
+    html: `
+      <div style="
+        width:52px;height:62px;display:flex;align-items:flex-start;justify-content:center;
+        filter:drop-shadow(0 12px 16px rgba(2,6,23,.32));
+      ">
+        <svg width="52" height="62" viewBox="0 0 52 62" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M26 58s18-16.7 18-34A18 18 0 1 0 8 24c0 17.3 18 34 18 34Z" fill="${color}"/>
+          <circle cx="26" cy="24" r="13" fill="white" fill-opacity=".18"/>
+          <text x="26" y="29" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="800" fill="white">${label}</text>
+        </svg>
+      </div>
+    `,
+  });
+
+const userIcon = createIcon("#2563eb", "YOU");
+const startIcon = createIcon("#16a34a", "A");
+const stopIcon = createIcon("#f97316", "STOP");
+const busIcon = createIcon("#4f46e5", "BUS");
+const destinationIcon = createIcon("#dc2626", "END");
+const driverIcon = createIcon("#0891b2", "DRV");
+const selectedIcon = createIcon("#7c3aed", "PIN");
 
 const formatMinutes = (minutes: number) => {
   if (!Number.isFinite(minutes) || minutes <= 0) return "Updating";
@@ -174,7 +131,7 @@ const toMarkerPoint = (location?: TrackingLocation | null): GeocodedPoint | null
   return { lat: location.lat, lng: location.lng, label: location.label || "Live location" };
 };
 
-const getGeocodeCacheKey = (label: string) => `syncride:google-geo:${encodeURIComponent(label.toLowerCase().trim())}`;
+const getGeocodeCacheKey = (label: string) => `syncride:osm-geo:${encodeURIComponent(label.toLowerCase().trim())}`;
 
 const geocodeLocation = async (label: string): Promise<GeocodedPoint | null> => {
   const normalized = label.trim();
@@ -183,116 +140,85 @@ const geocodeLocation = async (label: string): Promise<GeocodedPoint | null> => 
   const cached = localStorage.getItem(getGeocodeCacheKey(normalized));
   if (cached) return JSON.parse(cached) as GeocodedPoint;
 
-  const google = await loadGoogleMaps();
-  const maps = getMapsApi(google);
-  const geocoder = new maps.Geocoder();
+  const response = await fetch(
+    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(normalized)}&limit=1&countrycodes=in`
+  );
+  if (!response.ok) throw new Error("Street map geocoding failed");
 
-  const point = await new Promise<GeocodedPoint | null>((resolve, reject) => {
-    geocoder.geocode({ address: normalized, region: "in" }, (results, status) => {
-      if (status !== "OK") {
-        if (status === "ZERO_RESULTS") resolve(null);
-        else reject(new Error(`Google geocoding failed: ${status}`));
-        return;
-      }
+  const data = (await response.json()) as NominatimResult[];
+  const first = data[0];
+  if (!first) return null;
 
-      const result = results?.[0];
-      const location = result?.geometry?.location;
-      if (!location) {
-        resolve(null);
-        return;
-      }
-
-      resolve({
-        lat: location.lat(),
-        lng: location.lng(),
-        label: result.formatted_address || normalized,
-      });
-    });
-  });
-
-  if (point) localStorage.setItem(getGeocodeCacheKey(normalized), JSON.stringify(point));
+  const point = {
+    lat: Number(first.lat),
+    lng: Number(first.lon),
+    label: first.display_name || normalized,
+  };
+  localStorage.setItem(getGeocodeCacheKey(normalized), JSON.stringify(point));
   return point;
 };
 
-const createMarkerIcon = (maps: GoogleMapsApi, label: string, color: string) => {
-  const svg = `
-    <svg width="52" height="62" viewBox="0 0 52 62" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <filter id="shadow" x="0" y="0" width="52" height="62" filterUnits="userSpaceOnUse">
-        <feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#020617" flood-opacity=".32"/>
-      </filter>
-      <path filter="url(#shadow)" d="M26 58s18-16.7 18-34A18 18 0 1 0 8 24c0 17.3 18 34 18 34Z" fill="${color}"/>
-      <circle cx="26" cy="24" r="13" fill="white" fill-opacity=".18"/>
-      <text x="26" y="29" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="800" fill="white">${label}</text>
-    </svg>`;
-
-  return {
-    url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`,
-    scaledSize: new maps.Size(52, 62),
-    anchor: new maps.Point(26, 58),
-  };
-};
-
-function GoogleMapSearch({ onLocationSelect }: { onLocationSelect: (point: GeocodedPoint) => void }) {
+function StreetMapSearch({ onLocationSelect }: { onLocationSelect: (point: GeocodedPoint) => void }) {
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<PlacePrediction[]>([]);
+  const [suggestions, setSuggestions] = useState<NominatimResult[]>([]);
   const [searching, setSearching] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const map = useMap();
 
   useEffect(() => {
-    if (!isGoogleMapsConfigured || query.trim().length < 3) {
+    if (query.trim().length < 3) {
       setSuggestions([]);
       return;
     }
 
     const timer = window.setTimeout(async () => {
       try {
-        const google = await loadGoogleMaps();
-        const maps = getMapsApi(google);
-        const service = new maps.places.AutocompleteService();
-        service.getPlacePredictions(
-          {
-            input: query,
-            componentRestrictions: { country: "in" },
-          },
-          (predictions: PlacePrediction[] | null, status: string) => {
-            if (status !== maps.places.PlacesServiceStatus.OK || !predictions) {
-              setSuggestions([]);
-              return;
-            }
-            setSuggestions(predictions);
-            setShowSuggestions(true);
-          }
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&countrycodes=in`
         );
+        const data = (await response.json()) as NominatimResult[];
+        setSuggestions(data);
+        setShowSuggestions(true);
       } catch (error) {
-        console.error("Google place suggestions failed", error);
+        console.error("Street map suggestions failed", error);
       }
-    }, 350);
+    }, 450);
 
     return () => window.clearTimeout(timer);
   }, [query]);
 
-  const selectLocation = async (label: string) => {
+  const selectLocation = (result: NominatimResult) => {
+    const point = {
+      lat: Number(result.lat),
+      lng: Number(result.lon),
+      label: result.display_name,
+    };
+    map.flyTo([point.lat, point.lng], 15);
+    setQuery(point.label);
+    setSuggestions([]);
+    setShowSuggestions(false);
+    onLocationSelect(point);
+  };
+
+  const handleSearch = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!query.trim()) return;
+
     setSearching(true);
     try {
-      const point = await geocodeLocation(label);
+      const point = await geocodeLocation(query);
       if (!point) {
-        toast.error("Location not found in Google Maps");
+        toast.error("Location not found on street map");
         return;
       }
-      setQuery(point.label);
-      setSuggestions([]);
+      map.flyTo([point.lat, point.lng], 15);
       setShowSuggestions(false);
       onLocationSelect(point);
     } catch (error) {
-      toast.error(getErrorMessage(error, "Google Maps search failed"));
+      toast.error(getErrorMessage(error, "Street map search failed"));
     } finally {
       setSearching(false);
     }
-  };
-
-  const handleSearch = (event: React.FormEvent) => {
-    event.preventDefault();
-    if (query.trim()) void selectLocation(query);
   };
 
   return (
@@ -310,7 +236,7 @@ function GoogleMapSearch({ onLocationSelect }: { onLocationSelect: (point: Geoco
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             onFocus={() => setShowSuggestions(true)}
-            placeholder="Search with Google Maps"
+            placeholder="Search street map"
             className="w-full h-12 pl-12 pr-4 rounded-2xl border-2 border-transparent bg-card/95 backdrop-blur-xl shadow-2xl text-sm font-medium placeholder:text-muted-foreground focus:border-primary/50 focus:outline-none transition-all ring-1 ring-border/50"
           />
         </form>
@@ -325,12 +251,12 @@ function GoogleMapSearch({ onLocationSelect }: { onLocationSelect: (point: Geoco
             >
               {suggestions.map((suggestion) => (
                 <button
-                  key={suggestion.place_id}
-                  onClick={() => selectLocation(suggestion.description)}
+                  key={`${suggestion.lat}-${suggestion.lon}`}
+                  onClick={() => selectLocation(suggestion)}
                   className="w-full px-4 py-3 text-left text-sm hover:bg-primary/10 transition-colors border-b border-border/50 last:border-0 flex items-start gap-3"
                 >
                   <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
-                  <span className="line-clamp-2">{suggestion.description}</span>
+                  <span className="line-clamp-2">{suggestion.display_name}</span>
                 </button>
               ))}
             </motion.div>
@@ -341,7 +267,32 @@ function GoogleMapSearch({ onLocationSelect }: { onLocationSelect: (point: Geoco
   );
 }
 
-function GoogleTrackingMap({
+function FitStreetMap({ points }: { points: [number, number][] }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (points.length < 2) return;
+    map.fitBounds(points, { padding: [64, 64], maxZoom: 13 });
+  }, [map, points]);
+
+  return null;
+}
+
+function RecenterControl({ center }: { center: [number, number] }) {
+  const map = useMap();
+
+  return (
+    <button
+      onClick={() => map.flyTo(center, 15)}
+      className="absolute bottom-20 right-4 md:bottom-6 md:left-6 md:right-auto z-[1000] w-12 h-12 rounded-xl bg-card/90 backdrop-blur-md border border-border flex items-center justify-center shadow-lg hover:bg-accent transition-colors"
+      title="Recenter map"
+    >
+      <LocateFixed className="h-5 w-5 text-primary" />
+    </button>
+  );
+}
+
+function StreetTrackingMap({
   routePoints,
   userPosition,
   trackingUserPoint,
@@ -349,6 +300,7 @@ function GoogleTrackingMap({
   busPoint,
   selectedPoint,
   center,
+  onLocationSelect,
 }: {
   routePoints: GeocodedPoint[];
   userPosition: [number, number] | null;
@@ -357,177 +309,97 @@ function GoogleTrackingMap({
   busPoint: GeocodedPoint | null;
   selectedPoint: GeocodedPoint | null;
   center: [number, number];
+  onLocationSelect: (point: GeocodedPoint) => void;
 }) {
-  const mapElementRef = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<GoogleMapInstance | null>(null);
-  const markersRef = useRef<GoogleMarker[]>([]);
-  const polylineRef = useRef<GooglePolyline | null>(null);
-  const directionsRendererRef = useRef<GoogleDirectionsRenderer | null>(null);
-  const [mapError, setMapError] = useState<string | null>(null);
-  const [mapsLoaded, setMapsLoaded] = useState(false);
-
-  useEffect(() => {
-    if (!mapElementRef.current) return;
-    if (!isGoogleMapsConfigured) {
-      setMapError("Add VITE_GOOGLE_MAPS_API_KEY to .env, enable Maps JavaScript API, then restart Vite.");
-      return;
-    }
-
-    let cancelled = false;
-    loadGoogleMaps()
-      .then((google) => {
-        if (cancelled || !mapElementRef.current) return;
-        const maps = getMapsApi(google);
-        mapRef.current = new maps.Map(mapElementRef.current, {
-          center: { lat: center[0], lng: center[1] },
-          zoom: 12,
-          mapTypeControl: false,
-          fullscreenControl: false,
-          streetViewControl: false,
-          clickableIcons: true,
-          gestureHandling: "greedy",
-          styles: [
-            { featureType: "poi", stylers: [{ visibility: "off" }] },
-            { featureType: "transit", elementType: "labels.icon", stylers: [{ visibility: "off" }] },
-          ],
-        });
-        setMapsLoaded(true);
-      })
-      .catch((error) => setMapError(getErrorMessage(error, "Could not load Google Maps")));
-
-    return () => {
-      cancelled = true;
-    };
-  }, [center]);
-
-  useEffect(() => {
-    if (!mapsLoaded || !mapRef.current) return;
-
-    let cancelled = false;
-
-    loadGoogleMaps().then((google) => {
-      if (cancelled || !mapRef.current) return;
-      const maps = getMapsApi(google);
-
-      markersRef.current.forEach((marker) => marker.setMap(null));
-      markersRef.current = [];
-      polylineRef.current?.setMap(null);
-      directionsRendererRef.current?.setMap(null);
-
-      const addMarker = (point: GeocodedPoint, label: string, color: string, title: string) => {
-        const marker = new maps.Marker({
-          map: mapRef.current,
-          position: { lat: point.lat, lng: point.lng },
-          title,
-          icon: createMarkerIcon(maps, label, color),
-        });
-        const infoWindow = new maps.InfoWindow({
-          content: `<div style="max-width:240px"><strong>${title}</strong><br/><span>${point.label}</span></div>`,
-        });
-        marker.addListener("click", () => infoWindow.open({ anchor: marker, map: mapRef.current }));
-        markersRef.current.push(marker);
-      };
-
-      routePoints.forEach((point, index) => {
-        const isFirst = index === 0;
-        const isLast = index === routePoints.length - 1;
-        addMarker(point, isFirst ? "A" : isLast ? "END" : "STOP", isFirst ? "#16a34a" : isLast ? "#dc2626" : "#f97316", isFirst ? "Start" : isLast ? "Destination" : "Route stop");
-      });
-
-      const liveUserPoint = userPosition
-        ? { lat: userPosition[0], lng: userPosition[1], label: "Current GPS location" }
-        : trackingUserPoint;
-
-      if (liveUserPoint) addMarker(liveUserPoint, "YOU", "#2563eb", "You");
-      if (driverPoint) addMarker(driverPoint, "DRV", "#0891b2", "Driver location");
-      if (busPoint) addMarker(busPoint, "BUS", "#4f46e5", "Bus location");
-      if (selectedPoint) addMarker(selectedPoint, "PIN", "#7c3aed", "Selected location");
-
-      const bounds = new maps.LatLngBounds();
-      [...routePoints, ...(liveUserPoint ? [liveUserPoint] : []), ...(selectedPoint ? [selectedPoint] : [])].forEach((point) => {
-        bounds.extend({ lat: point.lat, lng: point.lng });
-      });
-
-      if (routePoints.length >= 2) {
-        const directionsService = new maps.DirectionsService();
-        const directionsRenderer = new maps.DirectionsRenderer({
-          map: mapRef.current,
-          suppressMarkers: true,
-          preserveViewport: true,
-          polylineOptions: {
-            strokeColor: "#4f46e5",
-            strokeOpacity: 0.78,
-            strokeWeight: 5,
-          },
-        });
-        directionsRendererRef.current = directionsRenderer;
-
-        directionsService.route(
-          {
-            origin: { lat: routePoints[0].lat, lng: routePoints[0].lng },
-            destination: { lat: routePoints[routePoints.length - 1].lat, lng: routePoints[routePoints.length - 1].lng },
-            waypoints: routePoints.slice(1, -1).map((point) => ({
-              location: { lat: point.lat, lng: point.lng },
-              stopover: true,
-            })),
-            travelMode: maps.TravelMode.DRIVING,
-          },
-          (result, status) => {
-            if (status === "OK") {
-              directionsRenderer.setDirections(result);
-              return;
-            }
-
-            polylineRef.current = new maps.Polyline({
-              map: mapRef.current,
-              path: routePoints.map((point) => ({ lat: point.lat, lng: point.lng })),
-              strokeColor: "#4f46e5",
-              strokeOpacity: 0.78,
-              strokeWeight: 5,
-            });
-          }
-        );
-      }
-
-      if (!bounds.isEmpty()) {
-        mapRef.current.fitBounds(bounds, 72);
-      } else {
-        mapRef.current.setCenter({ lat: center[0], lng: center[1] });
-        mapRef.current.setZoom(12);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [busPoint, center, driverPoint, mapsLoaded, routePoints, selectedPoint, trackingUserPoint, userPosition]);
-
-  const recenter = () => {
-    if (!mapRef.current) return;
-    mapRef.current.panTo({ lat: center[0], lng: center[1] });
-    mapRef.current.setZoom(15);
-  };
+  const liveUserPoint = userPosition
+    ? { lat: userPosition[0], lng: userPosition[1], label: "Current GPS location" }
+    : trackingUserPoint;
+  const fitPoints = [
+    ...routePoints.map((point) => [point.lat, point.lng] as [number, number]),
+    ...(liveUserPoint ? [[liveUserPoint.lat, liveUserPoint.lng] as [number, number]] : []),
+    ...(selectedPoint ? [[selectedPoint.lat, selectedPoint.lng] as [number, number]] : []),
+  ];
 
   return (
-    <>
-      <div ref={mapElementRef} className="h-full w-full" />
-      <button
-        onClick={recenter}
-        className="absolute bottom-20 right-4 md:bottom-6 md:left-6 md:right-auto z-[1000] w-12 h-12 rounded-xl bg-card/90 backdrop-blur-md border border-border flex items-center justify-center shadow-lg hover:bg-accent transition-colors"
-        title="Recenter map"
-      >
-        <LocateFixed className="h-5 w-5 text-primary" />
-      </button>
-      {mapError && (
-        <div className="absolute inset-0 z-[1000] bg-background/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="max-w-lg rounded-3xl border border-border bg-card p-6 text-center shadow-2xl">
-            <MapPin className="h-10 w-10 text-primary mx-auto mb-3" />
-            <h2 className="text-2xl font-black text-foreground">Google Maps setup needed</h2>
-            <p className="text-sm text-muted-foreground mt-2">{mapError}</p>
-          </div>
-        </div>
+    <MapContainer
+      center={center}
+      zoom={13}
+      scrollWheelZoom
+      zoomControl={false}
+      className="h-full w-full z-0"
+      style={{ height: "100%", width: "100%" }}
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+
+      <StreetMapSearch onLocationSelect={onLocationSelect} />
+      <RecenterControl center={center} />
+      <FitStreetMap points={fitPoints} />
+
+      {routePoints.length > 1 && (
+        <Polyline
+          positions={routePoints.map((point) => [point.lat, point.lng])}
+          color="#4f46e5"
+          weight={5}
+          opacity={0.76}
+          dashArray="10 8"
+        />
       )}
-    </>
+
+      {routePoints.map((point, index) => {
+        const isFirst = index === 0;
+        const isLast = index === routePoints.length - 1;
+        const icon = isFirst ? startIcon : isLast ? destinationIcon : stopIcon;
+
+        return (
+          <Marker key={`${point.lat}-${point.lng}-${index}`} position={[point.lat, point.lng]} icon={icon}>
+            <Popup>
+              <div className="max-w-64 p-1">
+                <p className="font-semibold text-sm">{isFirst ? "Start" : isLast ? "Destination" : "Route stop"}</p>
+                <p className="text-xs text-gray-500">{point.label}</p>
+              </div>
+            </Popup>
+          </Marker>
+        );
+      })}
+
+      {liveUserPoint && (
+        <Marker position={[liveUserPoint.lat, liveUserPoint.lng]} icon={userIcon}>
+          <Popup>
+            <div className="text-center p-1">
+              <p className="font-semibold text-sm">You</p>
+              <p className="text-xs text-gray-500">{liveUserPoint.label}</p>
+            </div>
+          </Popup>
+        </Marker>
+      )}
+
+      {driverPoint && (
+        <Marker position={[driverPoint.lat, driverPoint.lng]} icon={driverIcon}>
+          <Popup>
+            <p className="font-semibold text-sm">Driver location</p>
+            <p className="text-xs text-gray-500">{driverPoint.label}</p>
+          </Popup>
+        </Marker>
+      )}
+
+      {busPoint && (
+        <Marker position={[busPoint.lat, busPoint.lng]} icon={busIcon}>
+          <Popup>
+            <p className="font-semibold text-sm">Bus location</p>
+            <p className="text-xs text-gray-500">{busPoint.label}</p>
+          </Popup>
+        </Marker>
+      )}
+
+      {selectedPoint && (
+        <Marker position={[selectedPoint.lat, selectedPoint.lng]} icon={selectedIcon}>
+          <Popup>Selected location</Popup>
+        </Marker>
+      )}
+    </MapContainer>
   );
 }
 
@@ -577,15 +449,13 @@ const LiveTracking = () => {
   }, [activeTrip, user]);
 
   useEffect(() => {
-    if (!activeTrip || !isGoogleMapsConfigured) {
+    if (!activeTrip) {
       setRoutePoints([]);
       return;
     }
 
     let cancelled = false;
-    const labels = Array.from(
-      new Set(activeTrip.legs.flatMap((leg) => [leg.from, leg.to]).filter(Boolean))
-    );
+    const labels = Array.from(new Set(activeTrip.legs.flatMap((leg) => [leg.from, leg.to]).filter(Boolean)));
 
     setGeocoding(true);
     Promise.all(labels.map((label) => geocodeLocation(label).catch(() => null)))
@@ -624,7 +494,6 @@ const LiveTracking = () => {
   const userPosition: [number, number] | null = currentLocation
     ? [currentLocation.coords.latitude, currentLocation.coords.longitude]
     : null;
-
   const trackingUserPoint = toMarkerPoint(tracking?.lastKnownUserLocation);
   const driverPoint = toMarkerPoint(tracking?.driverLocation);
   const busPoint = toMarkerPoint(tracking?.busLocation);
@@ -633,7 +502,13 @@ const LiveTracking = () => {
   const etaMinutes = tracking?.etaMinutes ?? activeTrip?.legs.reduce((sum, leg) => sum + leg.duration, 0) ?? 0;
   const progress = Math.max(0, Math.min(100, tracking?.progress ?? 0));
   const protectedTrip = Boolean(activeTrip?.protectionEnabled);
-  const mapCenter = userPosition || (trackingUserPoint ? [trackingUserPoint.lat, trackingUserPoint.lng] as [number, number] : routePoints[0] ? [routePoints[0].lat, routePoints[0].lng] as [number, number] : DEFAULT_CENTER);
+  const mapCenter =
+    userPosition ||
+    (trackingUserPoint
+      ? ([trackingUserPoint.lat, trackingUserPoint.lng] as [number, number])
+      : routePoints[0]
+        ? ([routePoints[0].lat, routePoints[0].lng] as [number, number])
+        : DEFAULT_CENTER);
 
   const handleToggleSharing = async () => {
     if (isSharing) {
@@ -651,6 +526,100 @@ const LiveTracking = () => {
     navigator.clipboard.writeText(shareLink);
     toast.success("Share link copied");
   };
+
+  const TripTabs = ({ compact = false }: { compact?: boolean }) => (
+    <AnimatePresence mode="wait">
+      {activeTab === "timeline" && (
+        <motion.div
+          key={`timeline-${compact ? "desktop" : "mobile"}`}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          className={compact ? "space-y-0 rounded-3xl border border-border/70 bg-card/65 p-4" : "space-y-0"}
+        >
+          {activeTrip?.legs.map((leg, index) => {
+            const stepProgress = activeTrip.legs.length <= 1 ? 100 : (index / (activeTrip.legs.length - 1)) * 100;
+            const isDone = progress > stepProgress + 15;
+            const isCurrent = !isDone && progress >= stepProgress - 10;
+
+            return (
+              <div key={leg.id} className="flex gap-3 md:gap-4">
+                <div className="flex flex-col items-center">
+                  <div className={`w-3 h-3 rounded-full shrink-0 border-2 ${isDone ? "bg-success border-success" : isCurrent ? "bg-primary border-primary animate-pulse" : "bg-card border-border"}`} />
+                  {index < activeTrip.legs.length - 1 && (
+                    <div className={`w-0.5 flex-1 min-h-[38px] ${isDone ? "bg-success/40" : "bg-border"}`} />
+                  )}
+                </div>
+                <div className="pb-4 flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className={`text-xs md:text-sm ${isCurrent || isDone ? "text-foreground font-medium" : "text-muted-foreground"}`}>
+                      {compact ? getLegLabel(leg) : `${getLegLabel(leg)}: ${leg.from} to ${leg.to}`}
+                    </p>
+                    <span className="text-[10px] md:text-xs text-muted-foreground shrink-0">{leg.departureTime}</span>
+                  </div>
+                  <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5 line-clamp-2">
+                    {compact && `${leg.from} to ${leg.to} • `}
+                    {formatMinutes(leg.duration)} • ₹{leg.cost} • arrives {leg.arrivalTime}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </motion.div>
+      )}
+
+      {activeTab === "bus" && (
+        <motion.div key={`bus-${compact ? "desktop" : "mobile"}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-4">
+          <div className={compact ? "rounded-3xl border border-border/70 bg-card/70 p-4" : "glass-card p-4"}>
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <h4 className="font-semibold text-foreground text-sm">{intercityLeg?.vehicle || "Bus details pending"}</h4>
+              <div className="flex items-center gap-1">
+                <Star className="h-3.5 w-3.5 text-warning fill-warning" />
+                <span className="text-sm font-medium text-foreground">Real trip</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div><span className="text-muted-foreground">Operator</span><p className="font-medium text-foreground">{intercityLeg?.operator || "Awaiting update"}</p></div>
+              <div><span className="text-muted-foreground">Distance</span><p className="font-medium text-foreground">{intercityLeg?.distance || 0} km</p></div>
+              <div><span className="text-muted-foreground">Boarding</span><p className="line-clamp-2 font-medium text-foreground">{intercityLeg?.from || localLeg?.to || activeTrip?.from}</p></div>
+              <div><span className="text-muted-foreground">Arrival</span><p className="font-medium text-foreground">{intercityLeg?.arrivalTime || "Updating"}</p></div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-[10px] md:text-xs">
+            <div className="flex items-center gap-1 px-2 py-2 rounded-xl bg-success/10 text-success font-medium"><Battery className="h-3 w-3" /> Data from booking</div>
+            <div className="flex items-center gap-1 px-2 py-2 rounded-xl bg-primary/10 text-primary font-medium"><Wifi className="h-3 w-3" /> Street map live</div>
+          </div>
+        </motion.div>
+      )}
+
+      {activeTab === "safety" && (
+        <motion.div key={`safety-${compact ? "desktop" : "mobile"}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-3">
+          {[
+            { icon: Shield, title: protectedTrip ? "Trip Protection Active" : "Trip Protection Off", desc: protectedTrip ? "Enabled during booking" : "Booked without protection", color: protectedTrip ? "text-success" : "text-muted-foreground" },
+            { icon: Share2, title: isSharing ? "Sharing Active" : "Share Live Location", desc: isSharing ? "Private link is live" : "Start real-time GPS sharing", color: isSharing ? "text-success" : "text-primary", action: handleToggleSharing },
+            { icon: Copy, title: "Copy Share Link", desc: shareLink || "Start sharing first", color: "text-primary", action: copyLink },
+            { icon: AlertTriangle, title: "SOS Emergency", desc: "Emergency workflow placeholder", color: "text-destructive" },
+          ].map((item) => (
+            <button
+              key={item.title}
+              onClick={item.action}
+              className="flex w-full items-center gap-3 rounded-2xl border border-border/70 bg-card/70 p-3 text-left transition hover:bg-card"
+            >
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted">
+                <item.icon className={`h-5 w-5 ${item.color}`} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-black text-foreground">{item.title}</p>
+                <p className="truncate text-xs text-muted-foreground">{item.desc}</p>
+              </div>
+              <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+            </button>
+          ))}
+          {locationError && <p className="text-xs text-destructive">{locationError}</p>}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 
   if (loadingTrip) {
     return (
@@ -675,7 +644,7 @@ const LiveTracking = () => {
             <h1 className="text-3xl md:text-5xl font-black text-foreground">No booked trip to track yet</h1>
             <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
               Tracking uses your real Firebase trip records. Plan and book a journey first, then this page will show
-              Google Maps, live GPS, saved legs, and bus updates.
+              the street map, live GPS, saved legs, and bus updates.
             </p>
             <Link to="/">
               <Button variant="hero" size="lg" className="mt-6">
@@ -692,7 +661,7 @@ const LiveTracking = () => {
   return (
     <div className="min-h-screen bg-background md:pl-24 md:h-screen md:overflow-hidden relative overflow-x-hidden pt-0">
       <div className="relative h-[45vh] md:h-screen overflow-hidden">
-        <GoogleTrackingMap
+        <StreetTrackingMap
           routePoints={routePoints}
           userPosition={userPosition}
           trackingUserPoint={trackingUserPoint}
@@ -700,9 +669,8 @@ const LiveTracking = () => {
           busPoint={busPoint}
           selectedPoint={selectedPoint}
           center={mapCenter}
+          onLocationSelect={setSelectedPoint}
         />
-
-        <GoogleMapSearch onLocationSelect={setSelectedPoint} />
 
         <div className="absolute top-4 left-4 z-[1000] flex flex-col gap-2 md:hidden">
           <Button
@@ -747,14 +715,10 @@ const LiveTracking = () => {
                     <span className="text-primary">{progress}%</span>
                   </div>
                   <div className="h-2 rounded-full bg-muted/50 overflow-hidden">
-                    <motion.div
-                      className="h-full rounded-full bg-gradient-to-r from-success via-primary to-secondary"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${progress}%` }}
-                    />
+                    <motion.div className="h-full rounded-full bg-gradient-to-r from-success via-primary to-secondary" initial={{ width: 0 }} animate={{ width: `${progress}%` }} />
                   </div>
                   <div className="flex justify-between items-center text-[10px] text-muted-foreground pt-1">
-                    <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> Google Maps live tracking</span>
+                    <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> Street map live tracking</span>
                     <span className="font-bold text-foreground">ETA {formatMinutes(etaMinutes)}</span>
                   </div>
                 </div>
@@ -782,7 +746,7 @@ const LiveTracking = () => {
         {(geocoding || !currentLocation) && (
           <div className="absolute bottom-4 right-4 z-[1000] hidden md:flex items-center gap-2 px-3 py-2 rounded-full bg-card/95 text-foreground text-[11px] font-bold shadow-xl border border-border">
             <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
-            {geocoding ? "Mapping saved stops with Google" : "Waiting for GPS"}
+            {geocoding ? "Mapping saved stops" : "Waiting for GPS"}
           </div>
         )}
 
@@ -852,7 +816,7 @@ const LiveTracking = () => {
                       <User className="h-5 w-5 text-primary" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-black text-foreground">Google Maps + Firebase live</p>
+                      <p className="truncate text-sm font-black text-foreground">Street map + Firebase live</p>
                       <p className="text-xs text-muted-foreground">
                         {tracking?.status || activeTrip.status} • {protectedTrip ? "Protected" : "Standard"}
                       </p>
@@ -887,84 +851,7 @@ const LiveTracking = () => {
                   ))}
                 </div>
 
-                <AnimatePresence mode="wait">
-                  {activeTab === "timeline" && (
-                    <motion.div key="desktop-timeline" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-0 rounded-3xl border border-border/70 bg-card/65 p-4">
-                      {activeTrip.legs.map((leg, index) => {
-                        const stepProgress = activeTrip.legs.length <= 1 ? 100 : (index / (activeTrip.legs.length - 1)) * 100;
-                        const isDone = progress > stepProgress + 15;
-                        const isCurrent = !isDone && progress >= stepProgress - 10;
-
-                        return (
-                          <div key={leg.id} className="flex gap-3">
-                            <div className="flex flex-col items-center">
-                              <div className={`h-3 w-3 rounded-full border-2 ${isDone ? "border-success bg-success" : isCurrent ? "border-primary bg-primary animate-pulse" : "border-border bg-card"}`} />
-                              {index < activeTrip.legs.length - 1 && (
-                                <div className={`min-h-[42px] w-0.5 flex-1 ${isDone ? "bg-success/40" : "bg-border"}`} />
-                              )}
-                            </div>
-                            <div className="min-w-0 flex-1 pb-4">
-                              <div className="flex items-center justify-between gap-3">
-                                <p className="truncate text-sm font-black text-foreground">{getLegLabel(leg)}</p>
-                                <span className="shrink-0 text-[11px] font-bold text-muted-foreground">{leg.departureTime}</span>
-                              </div>
-                              <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{leg.from} to {leg.to}</p>
-                              <p className="mt-1 text-[11px] font-bold text-muted-foreground">{formatMinutes(leg.duration)} • ₹{leg.cost}</p>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </motion.div>
-                  )}
-
-                  {activeTab === "bus" && (
-                    <motion.div key="desktop-bus" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-3">
-                      <div className="rounded-3xl border border-border/70 bg-card/70 p-4">
-                        <div className="mb-3 flex items-center justify-between gap-3">
-                          <h2 className="text-base font-black text-foreground">{intercityLeg?.vehicle || "Bus details pending"}</h2>
-                          <span className="rounded-full bg-warning/10 px-2 py-1 text-[11px] font-black text-warning">Real trip</span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3 text-xs">
-                          <div><span className="text-muted-foreground">Operator</span><p className="font-bold text-foreground">{intercityLeg?.operator || "Awaiting update"}</p></div>
-                          <div><span className="text-muted-foreground">Distance</span><p className="font-bold text-foreground">{intercityLeg?.distance || 0} km</p></div>
-                          <div><span className="text-muted-foreground">Boarding</span><p className="line-clamp-2 font-bold text-foreground">{intercityLeg?.from || localLeg?.to || activeTrip.from}</p></div>
-                          <div><span className="text-muted-foreground">Arrival</span><p className="font-bold text-foreground">{intercityLeg?.arrivalTime || "Updating"}</p></div>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2 text-xs font-bold">
-                        <div className="rounded-2xl bg-success/10 px-3 py-2 text-success"><Battery className="mr-1 inline h-3 w-3" /> From booking</div>
-                        <div className="rounded-2xl bg-primary/10 px-3 py-2 text-primary"><Wifi className="mr-1 inline h-3 w-3" /> Google live</div>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {activeTab === "safety" && (
-                    <motion.div key="desktop-safety" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-2">
-                      {[
-                        { icon: Shield, title: protectedTrip ? "Trip Protection Active" : "Trip Protection Off", desc: protectedTrip ? "Enabled during booking" : "Booked without protection", color: protectedTrip ? "text-success" : "text-muted-foreground" },
-                        { icon: Share2, title: isSharing ? "Sharing Active" : "Share Live Location", desc: isSharing ? "Private link is live" : "Start real-time GPS sharing", color: isSharing ? "text-success" : "text-primary", action: handleToggleSharing },
-                        { icon: Copy, title: "Copy Share Link", desc: shareLink || "Start sharing first", color: "text-primary", action: copyLink },
-                        { icon: AlertTriangle, title: "SOS Emergency", desc: "Emergency workflow placeholder", color: "text-destructive" },
-                      ].map((item) => (
-                        <button
-                          key={item.title}
-                          onClick={item.action}
-                          className="flex w-full items-center gap-3 rounded-2xl border border-border/70 bg-card/70 p-3 text-left transition hover:bg-card"
-                        >
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted">
-                            <item.icon className={`h-5 w-5 ${item.color}`} />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="text-sm font-black text-foreground">{item.title}</p>
-                            <p className="truncate text-xs text-muted-foreground">{item.desc}</p>
-                          </div>
-                          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-                        </button>
-                      ))}
-                      {locationError && <p className="text-xs text-destructive">{locationError}</p>}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <TripTabs compact />
               </div>
 
               <div className="grid grid-cols-2 gap-2 border-t border-border/70 p-5">
@@ -1011,7 +898,7 @@ const LiveTracking = () => {
                 <p className="text-xs text-muted-foreground truncate">{activeTrip.from} to {activeTrip.to}</p>
                 <div className="flex items-center gap-1 mt-0.5">
                   <Star className="h-3 w-3 text-warning fill-warning" />
-                  <span className="text-xs font-medium text-foreground">Google Maps + Firebase live</span>
+                  <span className="text-xs font-medium text-foreground">Street map + Firebase live</span>
                   <span className="ml-1 text-[10px] bg-success/10 text-success px-1.5 py-0.5 rounded-full font-medium">
                     {tracking?.status || activeTrip.status}
                   </span>
@@ -1036,91 +923,7 @@ const LiveTracking = () => {
             ))}
           </div>
 
-          <AnimatePresence mode="wait">
-            {activeTab === "timeline" && (
-              <motion.div key="timeline" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-0">
-                {activeTrip.legs.map((leg, index) => {
-                  const stepProgress = activeTrip.legs.length <= 1 ? 100 : (index / (activeTrip.legs.length - 1)) * 100;
-                  const isDone = progress > stepProgress + 15;
-                  const isCurrent = !isDone && progress >= stepProgress - 10;
-
-                  return (
-                    <div key={leg.id} className="flex gap-3 md:gap-4">
-                      <div className="flex flex-col items-center">
-                        <div className={`w-3 h-3 rounded-full shrink-0 border-2 ${isDone ? "bg-success border-success" : isCurrent ? "bg-primary border-primary animate-pulse" : "bg-card border-border"}`} />
-                        {index < activeTrip.legs.length - 1 && (
-                          <div className={`w-0.5 flex-1 min-h-[38px] ${isDone ? "bg-success/40" : "bg-border"}`} />
-                        )}
-                      </div>
-                      <div className="pb-4 flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-3">
-                          <p className={`text-xs md:text-sm ${isCurrent || isDone ? "text-foreground font-medium" : "text-muted-foreground"}`}>
-                            {getLegLabel(leg)}: {leg.from} to {leg.to}
-                          </p>
-                          <span className="text-[10px] md:text-xs text-muted-foreground shrink-0">{leg.departureTime}</span>
-                        </div>
-                        <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5">
-                          {formatMinutes(leg.duration)} • ₹{leg.cost} • arrives {leg.arrivalTime}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </motion.div>
-            )}
-
-            {activeTab === "bus" && (
-              <motion.div key="bus" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
-                <div className="glass-card p-4">
-                  <div className="flex items-center justify-between gap-3 mb-3">
-                    <h4 className="font-semibold text-foreground text-sm">{intercityLeg?.vehicle || "Bus details pending"}</h4>
-                    <div className="flex items-center gap-1">
-                      <Star className="h-3.5 w-3.5 text-warning fill-warning" />
-                      <span className="text-sm font-medium text-foreground">Real trip</span>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div><span className="text-muted-foreground">Operator</span><p className="font-medium text-foreground">{intercityLeg?.operator || "Awaiting update"}</p></div>
-                    <div><span className="text-muted-foreground">Distance</span><p className="font-medium text-foreground">{intercityLeg?.distance || 0} km</p></div>
-                    <div><span className="text-muted-foreground">Boarding</span><p className="font-medium text-foreground">{intercityLeg?.from || localLeg?.to || activeTrip.from}</p></div>
-                    <div><span className="text-muted-foreground">Arrival</span><p className="font-medium text-foreground">{intercityLeg?.arrivalTime || "Updating"}</p></div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-2 text-[10px] md:text-xs">
-                  <div className="flex items-center gap-1 px-2 py-2 rounded-xl bg-success/10 text-success font-medium"><Battery className="h-3 w-3" /> Data from booking</div>
-                  <div className="flex items-center gap-1 px-2 py-2 rounded-xl bg-primary/10 text-primary font-medium"><Wifi className="h-3 w-3" /> Google live ready</div>
-                </div>
-              </motion.div>
-            )}
-
-            {activeTab === "safety" && (
-              <motion.div key="safety" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-3">
-                {[
-                  { icon: Shield, title: protectedTrip ? "Trip Protection Active" : "Trip Protection Off", desc: protectedTrip ? "Protection was enabled during booking" : "This trip was booked without protection", color: protectedTrip ? "text-success" : "text-muted-foreground" },
-                  { icon: Share2, title: isSharing ? "Sharing Active" : "Share Live Location", desc: isSharing ? "Everyone with the link can see your live GPS" : "Tap to start real-time GPS sharing", color: isSharing ? "text-success" : "text-primary", action: handleToggleSharing },
-                  { icon: Copy, title: "Copy Share Link", desc: shareLink || "Start sharing first to generate a private link", color: "text-primary", action: copyLink },
-                  { icon: AlertTriangle, title: "SOS Emergency", desc: "Emergency workflow placeholder for now", color: "text-destructive" },
-                ].map((item) => (
-                  <motion.div
-                    key={item.title}
-                    whileHover={{ scale: 1.01 }}
-                    className={`glass-card p-3 flex items-center gap-3 cursor-pointer border-2 transition-all ${item.title === "Sharing Active" ? "border-success/30 bg-success/5" : "border-transparent"}`}
-                    onClick={item.action}
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                      <item.icon className={`h-5 w-5 ${item.color}`} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-foreground text-xs md:text-sm">{item.title}</p>
-                      <p className="text-[10px] md:text-xs text-muted-foreground truncate">{item.desc}</p>
-                    </div>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
-                  </motion.div>
-                ))}
-                {locationError && <p className="text-xs text-destructive">{locationError}</p>}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <TripTabs />
 
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -1130,7 +933,7 @@ const LiveTracking = () => {
           >
             <Bus className="h-5 w-5 text-primary shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-foreground text-xs md:text-sm">Tracking now uses Google Maps + Firebase</p>
+              <p className="font-semibold text-foreground text-xs md:text-sm">Tracking now uses OpenStreetMap + Firebase</p>
               <p className="text-muted-foreground text-[10px] md:text-xs">
                 Driver and bus pins appear only when conductor/driver updates write real coordinates.
               </p>

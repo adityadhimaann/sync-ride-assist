@@ -49,7 +49,7 @@ const Navbar = () => {
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         className={`fixed z-50 transition-all duration-500 ${isTrackingPage
-          ? "hidden md:flex md:top-0 md:left-0 md:bottom-0 md:w-24 md:h-full md:border-r border-border/40 bg-card/80 backdrop-blur-3xl overflow-y-auto overflow-x-hidden"
+          ? "hidden md:flex md:top-0 md:left-0 md:bottom-0 md:w-24 md:h-full md:border-r border-white/10 bg-slate-950/95 text-white shadow-2xl backdrop-blur-3xl overflow-y-auto overflow-x-hidden dark:border-slate-200/80 dark:bg-white/95 dark:text-slate-950"
           : "top-0 left-0 right-0 h-16 md:h-20 border-b border-primary/20 bg-[#1a44a1]/95 backdrop-blur-xl shadow-lg"
           }`}
       >
@@ -57,7 +57,7 @@ const Navbar = () => {
           }`}>
           <Link to="/" className={`flex items-center gap-2 ${isTrackingPage ? "mb-10" : ""}`}>
             {isTrackingPage ? (
-              <img src="/assets/RideSync (1).svg" alt="SyncRide" className="h-10 w-auto" />
+              <img src="/assets/RideSync (1).svg" alt="SyncRide" className="h-10 w-auto drop-shadow-sm" />
             ) : (
               <span className="text-xl md:text-2xl font-black tracking-tight text-white">
                 Sync<span className="text-secondary">Ride</span>
@@ -76,7 +76,7 @@ const Navbar = () => {
                   to={item.href}
                   title={item.label}
                   className={`transition-all flex items-center gap-2 ${isTrackingPage
-                    ? `p-3 rounded-2xl ${isActive ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30" : "text-muted-foreground hover:bg-accent"}`
+                    ? `p-3 rounded-2xl ${isActive ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30" : "text-white/70 hover:bg-white/10 hover:text-white dark:text-slate-500 dark:hover:bg-slate-950/10 dark:hover:text-slate-950"}`
                     : `px-2 lg:px-3 xl:px-4 py-2 rounded-xl text-sm font-semibold ${isActive ? "bg-white/20 text-white shadow-sm" : "text-white/70 hover:text-white hover:bg-white/10"}`
                     }`}
                 >
@@ -91,7 +91,7 @@ const Navbar = () => {
               <button
                 onClick={() => window.dispatchEvent(new CustomEvent('toggle-trip-status'))}
                 title="Trip Status"
-                className="p-3 rounded-2xl text-muted-foreground hover:bg-accent hover:text-primary transition-all mt-2 group"
+                className="p-3 rounded-2xl text-white/70 hover:bg-white/10 hover:text-white transition-all mt-2 group dark:text-slate-500 dark:hover:bg-slate-950/10 dark:hover:text-slate-950"
               >
                 <Activity className="h-6 w-6 group-hover:scale-110 transition-transform" />
               </button>
@@ -102,7 +102,7 @@ const Navbar = () => {
             <ThemeToggle
               className={
                 isTrackingPage
-                  ? "border-border/60 bg-card/70 text-foreground hover:bg-accent"
+                  ? "border-white/15 bg-white/10 text-white hover:bg-white/15 hover:text-white dark:border-slate-200 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-slate-200 dark:hover:text-slate-950"
                   : "hidden md:inline-flex border-none bg-transparent text-white hover:bg-transparent hover:text-white"
               }
             />
@@ -127,7 +127,7 @@ const Navbar = () => {
                     <span className="hidden xl:inline">Logout</span>
                   </Button>
                 ) : (
-                  <button onClick={handleLogout} className="p-3 text-muted-foreground hover:text-destructive transition-colors" title="Logout">
+                  <button onClick={handleLogout} className="p-3 text-white/70 hover:text-destructive transition-colors dark:text-slate-500 dark:hover:text-destructive" title="Logout">
                     <LogOut className="h-6 w-6" />
                   </button>
                 )}

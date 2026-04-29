@@ -15,6 +15,12 @@
           }
         },
 
+        "trip_tracking": {
+          "$tripId": {
+            ".validate": "newData.hasChildren(['tripId', 'userId', 'status', 'phase', 'progress', 'etaMinutes', 'lastUpdated', 'createdAt']) && newData.child('tripId').val() === $tripId && newData.child('userId').val() === auth.uid && newData.child('progress').isNumber() && newData.child('etaMinutes').isNumber()"
+          }
+        },
+
         "journey_searches": {
           "$searchId": {
             ".validate": "newData.hasChildren(['startPoint', 'busStation', 'destination', 'createdAt'])"

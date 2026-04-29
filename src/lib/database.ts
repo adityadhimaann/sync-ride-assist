@@ -241,17 +241,101 @@ export interface Trip {
   createdAt: number;
 }
 
+export type TripTrackingPhase = "pickup" | "boarding" | "intercity" | "arriving" | "completed";
+
+export interface TrackingLocation {
+  lat: number;
+  lng: number;
+  label?: string;
+  updatedAt: number;
+}
+
+export interface TripTrackingState {
+  tripId: string;
+  userId: string;
+  status: "active" | "completed" | "cancelled";
+  phase: TripTrackingPhase;
+  progress: number;
+  etaMinutes: number;
+  lastKnownUserLocation?: TrackingLocation;
+  driverLocation?: TrackingLocation;
+  busLocation?: TrackingLocation;
+  currentLegId?: string;
+  lastUpdated: number;
+  createdAt: number;
+}
+
+const createInitialTripTracking = (tripId: string, trip: Trip): TripTrackingState => ({
+  tripId,
+  userId: trip.userId,
+  status: trip.status,
+  phase: "pickup",
+  progress: 0,
+  etaMinutes: trip.legs.reduce((total, leg) => total + (Number(leg.duration) || 0), 0),
+  currentLegId: trip.legs[0]?.id,
+  createdAt: Date.now(),
+  lastUpdated: Date.now(),
+});
+
 export const saveTrip = async (trip: Trip): Promise<string> => {
   const tripsRef = ref(db, `users/${trip.userId}/trips`);
   const newTripRef = push(tripsRef);
+  const tripId = newTripRef.key!;
   await set(newTripRef, trip);
-  return newTripRef.key!;
+  await set(ref(db, `users/${trip.userId}/trip_tracking/${tripId}`), createInitialTripTracking(tripId, trip));
+  return tripId;
 };
 
 export const getUserTrips = async (userId: string): Promise<Record<string, Trip>> => {
   const snapshot = await get(ref(db, `users/${userId}/trips`));
   if (!snapshot.exists()) return {};
   return snapshot.val() as Record<string, Trip>;
+};
+
+export const getUserActiveTrip = async (userId: string): Promise<(Trip & { id: string }) | null> => {
+  const trips = await getUserTrips(userId);
+  const sortedTrips = Object.entries(trips)
+    .map(([id, trip]) => ({ id, ...trip }))
+    .sort((a, b) => b.createdAt - a.createdAt);
+
+  return sortedTrips.find((trip) => trip.status === "active") || sortedTrips[0] || null;
+};
+
+export const ensureUserTripTracking = async (
+  uid: string,
+  tripId: string,
+  trip: Trip
+): Promise<TripTrackingState> => {
+  const trackingRef = ref(db, `users/${uid}/trip_tracking/${tripId}`);
+  const snapshot = await get(trackingRef);
+  if (snapshot.exists()) return snapshot.val() as TripTrackingState;
+
+  const tracking = createInitialTripTracking(tripId, trip);
+  await set(trackingRef, tracking);
+  return tracking;
+};
+
+export const onUserTripTrackingChange = (
+  uid: string,
+  tripId: string,
+  callback: (data: TripTrackingState | null) => void
+): Unsubscribe => {
+  const trackingRef = ref(db, `users/${uid}/trip_tracking/${tripId}`);
+  const unsubscribe = onValue(trackingRef, (snapshot) => {
+    callback(snapshot.exists() ? snapshot.val() : null);
+  });
+  return () => off(trackingRef);
+};
+
+export const updateUserTripTracking = async (
+  uid: string,
+  tripId: string,
+  data: Partial<Omit<TripTrackingState, "tripId" | "userId" | "createdAt">>
+) => {
+  await update(ref(db, `users/${uid}/trip_tracking/${tripId}`), {
+    ...data,
+    lastUpdated: Date.now(),
+  });
 };
 
 // ── Passengers (Conductor) ──

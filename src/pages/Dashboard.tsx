@@ -121,42 +121,41 @@ const Dashboard = () => {
         <motion.section
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-5 mb-6"
+          className="grid grid-cols-1 xl:grid-cols-[1.05fr_0.95fr] gap-5 mb-6"
         >
-          <div className="relative overflow-hidden rounded-[2rem] border border-border/50 bg-card/90 backdrop-blur-xl p-6 md:p-8 shadow-2xl">
-            <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-secondary/20 blur-3xl" />
-            <div className="absolute right-16 bottom-0 h-32 w-32 rounded-full bg-primary/20 blur-2xl" />
-            <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <div className="h-16 w-16 rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-border flex items-center justify-center">
+          <div className="relative rounded-[2rem] border border-border/50 bg-card/90 backdrop-blur-xl p-6 md:p-8 lg:p-10 shadow-2xl min-h-[300px]">
+            <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-secondary/20 blur-3xl pointer-events-none" />
+            <div className="absolute right-16 bottom-0 h-32 w-32 rounded-full bg-primary/20 blur-2xl pointer-events-none" />
+            <div className="relative flex h-full flex-col justify-between gap-8">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-5">
+                <div className="h-20 w-20 rounded-3xl overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 border border-border flex items-center justify-center shrink-0">
                   {avatarUrl ? (
                     <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
                   ) : (
-                    <UserRound className="h-8 w-8 text-primary" />
+                    <UserRound className="h-9 w-9 text-primary" />
                   )}
                 </div>
-                <div>
-                  <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary mb-2">
-                    <Sparkles className="h-3.5 w-3.5" />
-                    Personal commute cockpit
+                <div className="min-w-0 max-w-3xl">
+                  <div className="inline-flex max-w-full items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-xs font-bold text-primary mb-4">
+                    <span className="whitespace-normal sm:whitespace-nowrap">Personal commute cockpit</span>
                   </div>
-                  <h1 className="text-2xl md:text-4xl font-black tracking-tight text-foreground">
+                  <h1 className="text-3xl md:text-5xl font-black tracking-tight text-foreground leading-[1.05]">
                     Welcome back, {displayName.split(" ")[0]}
                   </h1>
-                  <p className="text-sm md:text-base text-muted-foreground mt-1">
+                  <p className="text-base md:text-lg text-muted-foreground mt-4 max-w-2xl leading-relaxed">
                     Track trips, searches, live sharing, and safety activity from one place.
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <Link to="/">
-                  <Button variant="hero" size="lg" className="w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link to="/" className="w-full sm:w-auto">
+                  <Button variant="hero" size="lg" className="w-full sm:w-auto px-8">
                     <Plus className="h-4 w-4" />
                     Plan Journey
                   </Button>
                 </Link>
-                <Link to="/tracking">
-                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                <Link to="/tracking" className="w-full sm:w-auto">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto px-8">
                     <Navigation className="h-4 w-4" />
                     Live Track
                   </Button>

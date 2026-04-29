@@ -17,7 +17,7 @@ import {
   type JourneySearchParams,
   type JourneyPlanAlternative,
 } from "@/lib/journey-planner";
-import { logUserActivity, saveTrip } from "@/lib/database";
+import { logUserActivity, saveTrip, startLocationSharing, updateUserTripTracking } from "@/lib/database";
 import { useAuth } from "@/contexts/AuthContext";
 import type { JourneyLeg } from "@/types/trip";
 import { getErrorMessage } from "@/lib/errors";
@@ -167,8 +167,32 @@ const JourneyResults = () => {
         },
       }).catch(() => undefined);
 
-      toast.success("Journey booked successfully! 🎉");
-      navigate("/dashboard");
+      await updateUserTripTracking(user.uid, tripId, {
+        status: "active",
+        phase: "pickup",
+        progress: 1,
+        etaMinutes: totalDuration,
+        currentLegId: activeLegs[0]?.id,
+      }).catch(() => undefined);
+
+      await startLocationSharing(user.uid, user.displayName || user.email || "SyncRide user", {
+        tripId,
+        durationMinutes: Math.max(totalDuration + 60, 120),
+      })
+        .then((shareId) =>
+          logUserActivity(user.uid, {
+            type: "location_sharing",
+            title: "Live tracking started",
+            description: "Your journey tracking session started after booking.",
+            metadata: { tripId, shareId },
+          }).catch(() => undefined)
+        )
+        .catch(() => {
+          toast.warning("Journey booked. Open tracking and allow location access to share live GPS.");
+        });
+
+      toast.success("Journey started. Opening live tracking...");
+      navigate(`/tracking?trip=${tripId}`);
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, "Failed to book journey"));
     } finally {

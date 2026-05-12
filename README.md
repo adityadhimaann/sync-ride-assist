@@ -4,7 +4,7 @@
 
 <br/>
 
-[![Live Demo](https://img.shields.io/badge/🚌_Live_Demo-syncride.web.app-FF6B35?style=for-the-badge&logoColor=white)](https://syncride.web.app)
+[![Live Demo](https://img.shields.io/badge/🚌_Live_Demo-syncride.web.app-FF6B35?style=for-the-badge&logoColor=white)](https://syncride-d95f4.web.app)
 [![TypeScript](https://img.shields.io/badge/TypeScript-98.5%25-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://github.com/adityadhimaann/sync-ride-assist)
 [![Firebase](https://img.shields.io/badge/Firebase-Realtime_DB-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com)
 [![Commits](https://img.shields.io/badge/Commits-59-FF6B35?style=for-the-badge&logo=git&logoColor=white)](https://github.com/adityadhimaann/sync-ride-assist/commits/main)
